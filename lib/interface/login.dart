@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            width: 320,
+            width: 520,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,11 +56,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Spacer(),
                   ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 70),
                 Text(
                   "Log in",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 42,
                     fontWeight: FontWeight.bold,
                     color: Colors.brown,
                   ),
