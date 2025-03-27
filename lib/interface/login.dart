@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: SignUpScreen());
-  }
-}
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
+
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) return null; // Handle user canceling login
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      print("Error signing in with Google: $e");
+      return null;
+    }
+  }
+
+  Future<UserCredential?> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status != LoginStatus.success) return null;
+
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(result.accessToken!.token);
+
+      return await FirebaseAuth.instance.signInWithCredential(
+        facebookAuthCredential,
+      );
+    } catch (e) {
+      print("Error signing in with Facebook: $e");
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +70,7 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 ClipOval(
                   child: Image.asset(
-                    "assets/images/profile.png", // Add a profile image if needed
+                    "assets/images/profile.png",
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
@@ -61,7 +90,14 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    UserCredential? userCredential = await signInWithGoogle();
+                    if (userCredential != null) {
+                      print(
+                        "Google Sign-In Successful: ${userCredential.user?.displayName}",
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.brown,
                     foregroundColor: Colors.white,
@@ -75,7 +111,14 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () async {
+                    UserCredential? userCredential = await signInWithFacebook();
+                    if (userCredential != null) {
+                      print(
+                        "Facebook Sign-In Successful: ${userCredential.user?.displayName}",
+                      );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
@@ -84,8 +127,8 @@ class SignUpScreen extends StatelessWidget {
                       horizontal: 24,
                     ),
                   ),
-                  icon: const Icon(Icons.email),
-                  label: const Text("Sign up with email"),
+                  icon: const Icon(Icons.facebook, color: Colors.blue),
+                  label: const Text("Continue with Facebook"),
                 ),
                 const SizedBox(height: 20),
                 TextButton(
