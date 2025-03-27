@@ -7,14 +7,24 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ResetPasswordScreen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
   }
 }
 
-class ResetPasswordScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +52,18 @@ class ResetPasswordScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
                     Spacer(),
                   ],
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Reset password",
+                  "Log in",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -56,19 +71,33 @@ class ResetPasswordScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                Text(
-                  "We'll email you a link to reset your password. If you used another email to sign up, we'll send them a link too.",
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-                SizedBox(height: 20),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: "Email or username",
                     filled: true,
                     fillColor: Colors.brown[200],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    filled: true,
+                    fillColor: Colors.brown[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: _togglePasswordVisibility,
                     ),
                   ),
                 ),
@@ -80,7 +109,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Send link"),
+                          content: Text("Logging in..."),
                           duration: Duration(seconds: 2),
                         ),
                       );
@@ -92,8 +121,53 @@ class ResetPasswordScreen extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "Send link",
+                      "Log in",
                       style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Center(
+                  child: Text(
+                    "Forgot Password",
+                    style: TextStyle(color: Colors.brown[800]),
+                  ),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton.icon(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.brown[700],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    icon: Icon(Icons.g_translate, color: Colors.white),
+                    label: Text(
+                      "Continue with Google",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.brown[800]!),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    icon: Icon(Icons.facebook, color: Colors.brown[800]),
+                    label: Text(
+                      "Continue with Facebook",
+                      style: TextStyle(color: Colors.brown[800], fontSize: 16),
                     ),
                   ),
                 ),
