@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/interface/ResetPassword.dart';
+import 'package:quizgenie/interface/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,9 +13,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ResetPasswordScreen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
   }
 }
