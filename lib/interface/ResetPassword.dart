@@ -44,10 +44,6 @@ class ResetPasswordScreen extends StatelessWidget {
                   children: [
                     IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
                     Spacer(),
-                    CircleAvatar(
-                      backgroundColor: Colors.pink,
-                      child: Text('B', style: TextStyle(color: Colors.white)),
-                    ),
                   ],
                 ),
                 SizedBox(height: 10),
