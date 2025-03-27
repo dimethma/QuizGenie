@@ -7,24 +7,14 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ResetPasswordScreen(),
+    );
   }
 }
 
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  bool _obscureText = true;
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
+class ResetPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,25 +35,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-            width: 320,
+            width: 520,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
+                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
                     Spacer(),
                   ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 40),
                 Text(
-                  "Log in",
+                  "Reset password",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -71,33 +56,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: "Email or username",
-                    filled: true,
-                    fillColor: Colors.brown[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
+                Text(
+                  "We'll email you a link to reset your password. If you used another email to sign up, we'll send them a link too.",
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 TextField(
-                  obscureText: _obscureText,
                   decoration: InputDecoration(
-                    labelText: "Password",
+                    labelText: "Email",
                     filled: true,
                     fillColor: Colors.brown[200],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                      ),
-                      onPressed: _togglePasswordVisibility,
                     ),
                   ),
                 ),
@@ -109,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text("Logging in..."),
+                          content: Text("Send link"),
                           duration: Duration(seconds: 2),
                         ),
                       );
@@ -121,53 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     child: Text(
-                      "Log in",
+                      "Send link",
                       style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: Text(
-                    "Forgot Password",
-                    style: TextStyle(color: Colors.brown[800]),
-                  ),
-                ),
-                SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.brown[700],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    icon: Icon(Icons.g_translate, color: Colors.white),
-                    label: Text(
-                      "Continue with Google",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.brown[800]!),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    icon: Icon(Icons.facebook, color: Colors.brown[800]),
-                    label: Text(
-                      "Continue with Facebook",
-                      style: TextStyle(color: Colors.brown[800], fontSize: 16),
                     ),
                   ),
                 ),
