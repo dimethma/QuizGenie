@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ResetPasswordScreen(),
-    );
-  }
-}
+import 'package:quizgenie/interface/login.dart';
+import 'package:quizgenie/interface/login.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
   @override
@@ -42,7 +30,17 @@ class ResetPasswordScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ),
+                        );
+                      },
+                    ),
                     Spacer(),
                   ],
                 ),

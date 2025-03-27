@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
-  }
-}
+import 'ResetPassword.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -50,12 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
-                    Spacer(),
-                  ],
-                ),
                 SizedBox(height: 70),
                 Text(
                   "Log in",
@@ -123,46 +107,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: 10),
                 Center(
-                  child: Text(
-                    "Forgot Password",
-                    style: TextStyle(color: Colors.brown[800]),
-                  ),
-                ),
-                SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.brown[700],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ResetPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Forgot Password",
+                      style: TextStyle(
+                        color: Colors.brown[800],
+                        decoration: TextDecoration.underline,
                       ),
-                    ),
-                    icon: Icon(Icons.g_translate, color: Colors.white),
-                    label: Text(
-                      "Continue with Google",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  height: 45,
-                  child: OutlinedButton.icon(
-                    onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.brown[800]!),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    icon: Icon(Icons.facebook, color: Colors.brown[800]),
-                    label: Text(
-                      "Continue with Facebook",
-                      style: TextStyle(color: Colors.brown[800], fontSize: 16),
                     ),
                   ),
                 ),
