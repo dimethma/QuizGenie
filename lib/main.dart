@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quizgenie/interface/login.dart'; // Ensure this file exists
+import 'package:quizgenie/interface/login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
