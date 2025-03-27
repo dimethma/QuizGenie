@@ -35,7 +35,7 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
               ],
             ),
-            width: 320,
+            width: 520,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +46,7 @@ class ResetPasswordScreen extends StatelessWidget {
                     Spacer(),
                   ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 40),
                 Text(
                   "Reset password",
                   style: TextStyle(
