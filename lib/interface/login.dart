@@ -11,7 +11,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _obscureText = true;
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,10 +54,6 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     IconButton(icon: Icon(Icons.arrow_back), onPressed: () {}),
                     Spacer(),
-                    CircleAvatar(
-                      backgroundColor: Colors.pink,
-                      child: Text('B', style: TextStyle(color: Colors.white)),
-                    ),
                   ],
                 ),
                 SizedBox(height: 10),
@@ -70,7 +79,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextField(
-                  obscureText: true,
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: "Password",
                     filled: true,
@@ -79,7 +88,12 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
                     ),
-                    suffixIcon: Icon(Icons.visibility_off),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
