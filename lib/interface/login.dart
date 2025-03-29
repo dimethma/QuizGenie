@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login successful!")));
-      // Navigate to home or dashboard screen after login
     } catch (e) {
       ScaffoldMessenger.of(
         context,
