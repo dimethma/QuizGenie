@@ -7,6 +7,7 @@ import 'package:quizgenie/interface/account.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/interface/ResetPassword.dart';
 import 'package:quizgenie/interface/login.dart';
+import 'package:quizgenie/startup.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: AddPapersPage(),
+      home: QuizGenieIntroScreen(),
     );
   }
 }
