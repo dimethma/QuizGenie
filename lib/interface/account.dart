@@ -22,8 +22,11 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Paper Analyzer")),
       body: const Center(child: Text("List of Papers will be displayed here")),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const AddPaperScreen())),
+        onPressed:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AddPaperScreen()),
+            ),
         child: const Icon(Icons.add),
       ),
     );
@@ -55,21 +58,16 @@ class _AddPaperScreenState extends State<AddPaperScreen> {
             ),
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(labelText: "Paper Type"),
-              items: ["MCQ", "Essay"].map((type) {
-                return DropdownMenuItem(value: type, child: Text(type));
-              }).toList(),
+              items:
+                  ["MCQ", "Essay"].map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
               onChanged: (val) => setState(() => paperType = val),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Upload Paper"),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text("Upload Paper")),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text("Save Paper"),
-            ),
+            ElevatedButton(onPressed: () {}, child: const Text("Save Paper")),
           ],
         ),
       ),
