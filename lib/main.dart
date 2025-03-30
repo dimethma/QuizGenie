@@ -1,11 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quizgenie/QuizG_1.dart';
+import 'package:quizgenie/QuizG_3.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/account.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/interface/ResetPassword.dart';
-import 'package:quizgenie/interface/login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +18,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: FeedScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: QuizResultPage(
+        correctAnswers: 35, // Example value (replace with actual variable)
+        totalQuestions: 50, // Example value (replace with actual variable)
+      ),
+    );
   }
 }
