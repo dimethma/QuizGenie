@@ -36,7 +36,16 @@ class _AddPapersPageState extends State<AddPapersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Papers")), // App bar with title
+      appBar: AppBar(
+        title: Text(
+          "Add Papers",
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF874E29),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -45,109 +54,54 @@ class _AddPapersPageState extends State<AddPapersPage> {
             // Instructional text
             Text(
               "Access up to $_maxFiles sample papers for practice and preparation.",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF271D15),
+              ),
             ),
-            SizedBox(
-              height: 40,
-            ), // Increased space between text and blue color bar
-            // Blue color bar with rounded corners
+            SizedBox(height: 20),
+            // Colored bar with icons
             Container(
-              height: 50, // Set height of the blue bar to 50
+              height: 50,
               decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(
-                  10,
-                ), // Rounded corners for the blue bar
+                color: Color(0xFFF4D582),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Create new folder icon
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(
-                        0.25,
-                      ), // Semi-transparent background
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners for icons
+                  IconButton(
+                    icon: Icon(
+                      Icons.create_new_folder,
+                      color: Color(0xFF101713),
                     ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero, // Remove padding
-                      icon: Icon(
-                        Icons.create_new_folder,
-                        color: Colors.white,
-                        size: 20, // Icon size
-                      ),
-                      onPressed: () {},
-                    ),
+                    onPressed: () {},
                   ),
-                  // Display folders icon
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners for icons
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero, // Remove padding
-                      icon: Icon(
-                        Icons.folder,
-                        color: Colors.white,
-                        size: 20,
-                      ), // Icon size
-                      onPressed: () {},
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.folder, color: Color(0xFF101713)),
+                    onPressed: () {},
                   ),
-                  // Display list view icon
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners for icons
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero, // Remove padding
-                      icon: Icon(
-                        Icons.view_list,
-                        color: Colors.white,
-                        size: 20, // Icon size
-                      ),
-                      onPressed: () {},
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.view_list, color: Color(0xFF101713)),
+                    onPressed: () {},
                   ),
-                  // Display tree view icon
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
-                      borderRadius: BorderRadius.circular(
-                        20,
-                      ), // Rounded corners for icons
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero, // Remove padding
-                      icon: Icon(
-                        Icons.account_tree,
-                        color: Colors.white,
-                        size: 20, // Icon size
-                      ),
-                      onPressed: () {},
-                    ),
+                  IconButton(
+                    icon: Icon(Icons.account_tree, color: Color(0xFF101713)),
+                    onPressed: () {},
                   ),
                 ],
               ),
             ),
             SizedBox(height: 10),
-
-            // Drag-and-drop file upload area
+            // File upload section
             GestureDetector(
               onTap: _pickFiles,
               child: Container(
                 height: 150,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue),
+                  color: Color(0xFFFFFFFF),
+                  border: Border.all(color: Color(0xFF874E29)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -157,67 +111,83 @@ class _AddPapersPageState extends State<AddPapersPage> {
                       Icon(
                         Icons.cloud_upload,
                         size: 40,
-                        color: Colors.blue,
-                      ), // Upload icon
+                        color: Color(0xFF874E29),
+                      ),
                       Text(
                         "Drag and drop files here or tap to upload",
-                      ), // Instruction text
+                        style: TextStyle(color: Color(0xFF271D15)),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
             SizedBox(height: 10),
-
             // List of selected files
             Expanded(
               child: ListView.builder(
                 itemCount: _files.length,
                 itemBuilder:
                     (context, index) => ListTile(
-                      title: Text(_files[index]), // File name
+                      title: Text(
+                        _files[index],
+                        style: TextStyle(color: Color(0xFF101713)),
+                      ),
                       trailing: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                        ), // Delete file button
+                        icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _removeFile(index),
                       ),
                     ),
               ),
             ),
-
-            // Row containing Add and Cancel buttons aligned to the left
+            // Buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 ElevatedButton(
                   onPressed: _pickFiles,
-                  child: Text("Add"),
-                ), // Add button
-                SizedBox(width: 10), // Space between buttons
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFF4D582),
+                  ),
+                  child: Text(
+                    "Add",
+                    style: TextStyle(color: Color(0xFF271D15)),
+                  ),
+                ),
+                SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {},
-                  child: Text("Cancel"),
-                ), // Cancel button
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFF4D582),
+                  ),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Color(0xFF271D15)),
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 200),
-
             // Next button
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF271D15),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: [Text("Next"), Icon(Icons.arrow_forward)],
+                  children: [
+                    Text("Next", style: TextStyle(color: Colors.white)),
+                    Icon(Icons.arrow_forward, color: Colors.white),
+                  ],
                 ),
               ),
             ),
           ],
         ),
       ),
+      backgroundColor: Color(0xFFFFFFFF),
     );
   }
 }
