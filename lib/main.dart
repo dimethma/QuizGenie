@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quizgenie/Home.dart';
 import 'package:quizgenie/QuizG_1.dart';
 import 'package:quizgenie/QuizG_3.dart';
+import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/account.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/interface/ResetPassword.dart';
@@ -21,9 +22,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: CategoryScreen(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: FeedScreen());
   }
 }
