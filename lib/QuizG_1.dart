@@ -36,13 +36,15 @@ class _AddPapersPageState extends State<AddPapersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF271D15), // Background color
       appBar: AppBar(
+        backgroundColor: Color(0xFF271D15), // AppBar background
         title: Text(
           "Add Papers",
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF874E29),
+            color: Color(0xFFF4D582), // Text color for contrast
           ),
         ),
       ),
@@ -57,10 +59,11 @@ class _AddPapersPageState extends State<AddPapersPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF271D15),
+                color: Color(0xFFF4D582), // Lighter text for visibility
               ),
             ),
             SizedBox(height: 20),
+
             // Colored bar with icons
             Container(
               height: 50,
@@ -71,37 +74,23 @@ class _AddPapersPageState extends State<AddPapersPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.create_new_folder,
-                      color: Color(0xFF101713),
-                    ),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.folder, color: Color(0xFF101713)),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.view_list, color: Color(0xFF101713)),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.account_tree, color: Color(0xFF101713)),
-                    onPressed: () {},
-                  ),
+                  Icon(Icons.create_new_folder, color: Color(0xFF271D15)),
+                  Icon(Icons.folder, color: Color(0xFF271D15)),
+                  Icon(Icons.view_list, color: Color(0xFF271D15)),
+                  Icon(Icons.account_tree, color: Color(0xFF271D15)),
                 ],
               ),
             ),
             SizedBox(height: 10),
+
             // File upload section
             GestureDetector(
               onTap: _pickFiles,
               child: Container(
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  border: Border.all(color: Color(0xFF874E29)),
+                  color: Colors.white,
+                  border: Border.all(color: Color(0xFFF4D582)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -111,11 +100,11 @@ class _AddPapersPageState extends State<AddPapersPage> {
                       Icon(
                         Icons.cloud_upload,
                         size: 40,
-                        color: Color(0xFF874E29),
+                        color: Color(0xFFF4D582),
                       ),
                       Text(
                         "Drag and drop files here or tap to upload",
-                        style: TextStyle(color: Color(0xFF271D15)),
+                        style: TextStyle(color: Color(0xFFF4D582)),
                       ),
                     ],
                   ),
@@ -123,23 +112,28 @@ class _AddPapersPageState extends State<AddPapersPage> {
               ),
             ),
             SizedBox(height: 10),
+
             // List of selected files
             Expanded(
               child: ListView.builder(
                 itemCount: _files.length,
                 itemBuilder:
-                    (context, index) => ListTile(
-                      title: Text(
-                        _files[index],
-                        style: TextStyle(color: Color(0xFF101713)),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _removeFile(index),
+                    (context, index) => Card(
+                      color: Color(0xFFF4D582), // Light background for contrast
+                      child: ListTile(
+                        title: Text(
+                          _files[index],
+                          style: TextStyle(color: Color(0xFF271D15)),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _removeFile(index),
+                        ),
                       ),
                     ),
               ),
             ),
+
             // Buttons
             Row(
               children: [
@@ -166,20 +160,22 @@ class _AddPapersPageState extends State<AddPapersPage> {
                 ),
               ],
             ),
-            SizedBox(height: 200),
+
+            SizedBox(height: 150),
+
             // Next button
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF271D15),
+                  backgroundColor: Color(0xFFF4D582),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("Next", style: TextStyle(color: Colors.white)),
-                    Icon(Icons.arrow_forward, color: Colors.white),
+                    Text("Next", style: TextStyle(color: Color(0xFF271D15))),
+                    Icon(Icons.arrow_forward, color: Color(0xFF271D15)),
                   ],
                 ),
               ),
@@ -187,7 +183,6 @@ class _AddPapersPageState extends State<AddPapersPage> {
           ],
         ),
       ),
-      backgroundColor: Color(0xFFFFFFFF),
     );
   }
 }
