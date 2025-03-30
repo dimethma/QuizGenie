@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:quizgenie/Home.dart';
 import 'package:quizgenie/QuizG_1.dart';
 import 'package:quizgenie/QuizG_3.dart';
 import 'package:quizgenie/chat.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: QuizResultPage(
@@ -25,5 +27,8 @@ class MyApp extends StatelessWidget {
         totalQuestions: 50, // Example value (replace with actual variable)
       ),
     );
+=======
+    return MaterialApp(debugShowCheckedModeBanner: false, home: HomePage());
+>>>>>>> b18d7e92988712ecd360632b2f42e46934dc354a
   }
 }
