@@ -105,8 +105,12 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 177, 120, 35),
-      appBar: AppBar(title: Text("Paper Analyzer")),
+      backgroundColor: Color.fromARGB(225, 177, 120, 35),
+      appBar: AppBar(
+        title: Text("Paper Analyzer"),
+        backgroundColor: Color.fromARGB(224, 36, 20, 3),
+      ),
+
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
