@@ -66,7 +66,6 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
       String name = await dropzoneController!.getFilename(file);
       final bytes = await dropzoneController!.getFileData(file);
 
-      // Upload to Firebase Storage
       Reference ref = FirebaseStorage.instance.ref().child("papers/$name");
       await ref.putData(bytes);
       String downloadURL = await ref.getDownloadURL();
@@ -174,10 +173,10 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
               "Step 1: Upload File",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             Container(
               width: double.infinity,
-              height: 150,
+              height: 300,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.grey,
@@ -228,6 +227,19 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.group), label: 'Groups'),
+          NavigationDestination(
+            icon: Icon(Icons.menu_book),
+            label: 'Resources',
+          ),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
       ),
     );
   }
