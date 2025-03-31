@@ -78,7 +78,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  "Reset Password",
+                  "Reset Password.",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
