@@ -89,7 +89,7 @@ class _AddPapersPageState extends State<AddPapersPage> {
               child: Container(
                 height: 150,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color.fromARGB(129, 244, 214, 130),
                   border: Border.all(color: Color(0xFFF4D582)),
                   borderRadius: BorderRadius.circular(10),
                 ),
