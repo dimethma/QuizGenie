@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quizgenie/QuizG_1.dart';
+import 'package:quizgenie/interface/analyzer.dart';
 import 'package:quizgenie/interface/login.dart';
 
 Future<void> main() async {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginScreen(),
+      home: PaperAnalyzerApp(),
     );
   }
 }

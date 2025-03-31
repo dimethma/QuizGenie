@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class PaperAnalyzerApp extends StatelessWidget {
   const PaperAnalyzerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Existing build method code remains the same
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -17,7 +21,7 @@ class PaperAnalyzerApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true, // Centers the title in the AppBar
+        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -35,7 +39,6 @@ class PaperAnalyzerApp extends StatelessWidget {
                   ),
                 ),
                 
-                // Add Your Paper section
                 const SizedBox(height: 32),
                 const Text(
                   "Add Your Paper",
@@ -56,10 +59,9 @@ class PaperAnalyzerApp extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 
-                // Form fields integrated inline
                 const PaperInputForm(),
                 
-                const SizedBox(height: 60), // Add space at bottom for FAB
+                const SizedBox(height: 60),
               ],
             ),
           ),
@@ -67,7 +69,6 @@ class PaperAnalyzerApp extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Show bottom sheet with paper creation options
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -84,8 +85,8 @@ class PaperAnalyzerApp extends StatelessWidget {
     );
   }
 
-  // Bottom sheet for paper creation options
   Widget _buildPaperCreationOptions(BuildContext context) {
+    // Unchanged
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -110,7 +111,6 @@ class PaperAnalyzerApp extends StatelessWidget {
             subtitle: const Text("Build a new paper with AI assistance"),
             onTap: () {
               Navigator.pop(context);
-              // Navigate to the create from scratch screen
               Navigator.push(
                 context, 
                 MaterialPageRoute(builder: (_) => const CreatePaperScreen())
@@ -123,7 +123,6 @@ class PaperAnalyzerApp extends StatelessWidget {
             subtitle: const Text("Get AI analysis for your paper"),
             onTap: () {
               Navigator.pop(context);
-              // Show file picker or upload screen
               _showUploadOptions(context);
             },
           ),
@@ -133,7 +132,6 @@ class PaperAnalyzerApp extends StatelessWidget {
             subtitle: const Text("Start with paper templates"),
             onTap: () {
               Navigator.pop(context);
-              // Navigate to templates gallery
               Navigator.push(
                 context, 
                 MaterialPageRoute(builder: (_) => const TemplateGalleryScreen())
@@ -146,8 +144,10 @@ class PaperAnalyzerApp extends StatelessWidget {
     );
   }
 
-  // Dialog for upload options
+  // Updated method with actual implementation for file and image picking
   void _showUploadOptions(BuildContext context) {
+    final ImagePicker _picker = ImagePicker();
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -158,25 +158,48 @@ class PaperAnalyzerApp extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.photo_library),
               title: const Text("Upload from gallery"),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                // Implement gallery picker
+                
+                // Pick image from gallery
+                final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  // Process the selected image
+                  _processSelectedFile(context, image.path, 'image');
+                }
               },
             ),
             ListTile(
               leading: const Icon(Icons.camera_alt),
               title: const Text("Take a photo"),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                // Implement camera functionality
+                
+                // Capture image using camera
+                final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+                if (photo != null) {
+                  // Process the captured photo
+                  _processSelectedFile(context, photo.path, 'image');
+                }
               },
             ),
             ListTile(
               leading: const Icon(Icons.file_copy),
               title: const Text("Choose document"),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(context);
-                // Implement file picker
+                
+                // Pick document using file picker
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowedExtensions: ['pdf', 'doc', 'docx'],
+                );
+                
+                if (result != null) {
+                  String path = result.files.single.path!;
+                  // Process the selected document
+                  _processSelectedFile(context, path, 'document');
+                }
               },
             ),
           ],
@@ -190,8 +213,305 @@ class PaperAnalyzerApp extends StatelessWidget {
       ),
     );
   }
+  
+  // Method to handle the selected file
+  void _processSelectedFile(BuildContext context, String filePath, String fileType) {
+    // Navigate to a screen to show the selected file
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UploadedPaperPreviewScreen(
+          filePath: filePath,
+          fileType: fileType,
+        ),
+      ),
+    );
+  }
 }
 
+// New screen to preview the uploaded paper
+class UploadedPaperPreviewScreen extends StatelessWidget {
+  final String filePath;
+  final String fileType;
+  
+  const UploadedPaperPreviewScreen({
+    super.key,
+    required this.filePath,
+    required this.fileType,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Preview Paper"),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              "Preview Your Paper",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            
+            // Display file preview
+            Expanded(
+              child: _buildFilePreview(),
+            ),
+            
+            const SizedBox(height: 20),
+            // Form fields for paper title and type
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Paper Title",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: "Paper Type",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              items: ["MCQ", "Essay"].map((type) {
+                return DropdownMenuItem(value: type, child: Text(type));
+              }).toList(),
+              onChanged: (val) {},
+            ),
+            const SizedBox(height: 24),
+            
+            ElevatedButton(
+              onPressed: () {
+                // Proceed with paper analysis
+                _analyzePaper(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text("Analyze Paper"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildFilePreview() {
+    if (fileType == 'image') {
+      // Display image preview
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.file(
+            File(filePath),
+            fit: BoxFit.contain,
+          ),
+        ),
+      );
+    } else {
+      // Display document preview (icon with filename)
+      String filename = filePath.split('/').last;
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.grey.shade100,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.description,
+              size: 80,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              filename,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "Document preview not available",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+  
+  void _analyzePaper(BuildContext context) {
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+    
+    // Simulate paper analysis (replace with actual analysis logic)
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pop(context); // Remove loading dialog
+      
+      // Navigate to results screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PaperAnalysisResultScreen(),
+        ),
+      );
+    });
+  }
+}
+
+// Sample result screen
+class PaperAnalysisResultScreen extends StatelessWidget {
+  const PaperAnalysisResultScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Analysis Results"),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              "Paper Analysis Results",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            
+            // Sample analysis results - replace with actual data
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Paper Type: MCQ",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Questions Identified: 15",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Difficulty Level: Medium",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    "AI generated answers and explanations are available below.",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 20),
+            
+            Expanded(
+              child: ListView.builder(
+                itemCount: 5, // Example count
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Question ${index + 1}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "Sample question text for question ${index + 1}.",
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            "Answer:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "Option B: Sample answer text",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            "Explanation:",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            "This is the correct answer because of specific reasons related to the question. The AI has analyzed the content and determined this to be the most accurate response.",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Rest of your classes remain unchanged
 class PaperInputForm extends StatefulWidget {
   const PaperInputForm({super.key});
 
@@ -258,7 +578,7 @@ class _PaperInputFormState extends State<PaperInputForm> {
               ),
             ),
             child: const Text(
-              "Upload Paper",
+              "Analyze Paper",
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
             ),
           ),
@@ -267,8 +587,6 @@ class _PaperInputFormState extends State<PaperInputForm> {
     );
   }
 }
-
-// New screens to support the FAB functionality
 
 class CreatePaperScreen extends StatelessWidget {
   const CreatePaperScreen({super.key});
