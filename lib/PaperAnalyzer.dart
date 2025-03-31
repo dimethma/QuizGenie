@@ -11,6 +11,13 @@ class PaperAnalyzer extends StatefulWidget {
 
 class _PaperAnalyzerState extends State<PaperAnalyzer> {
   List<String> uploadedFiles = [];
+  int _selectedIndex = 0; // Track selected tab
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   Future<void> pickFiles() async {
     if (uploadedFiles.length >= 5) {
@@ -45,7 +52,7 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Upload failed: \$e")));
+      ).showSnackBar(SnackBar(content: Text("Upload failed: $e")));
     }
   }
 
@@ -91,7 +98,7 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("\$numQuestions \$type questions generated!")),
+      SnackBar(content: Text("$numQuestions $type questions generated!")),
     );
   }
 
@@ -113,6 +120,23 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
             Text("Uploaded Papers: ${uploadedFiles.length}/5"),
           ],
         ),
+      ),
+
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Resources',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
       ),
     );
   }
