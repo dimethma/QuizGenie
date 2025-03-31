@@ -18,7 +18,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     if (email.isEmpty) {
       setState(() {
-        _statusMessage = "Please enter your email.";
+        _statusMessage = "Please enter your Email.";
       });
       return;
     }
