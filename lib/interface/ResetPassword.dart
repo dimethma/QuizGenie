@@ -18,7 +18,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     if (email.isEmpty) {
       setState(() {
-        _statusMessage = "Please enter your email.";
+        _statusMessage = "Please enter your Email.";
       });
       return;
     }
@@ -26,7 +26,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     try {
       await _auth.sendPasswordResetEmail(email: email);
       setState(() {
-        _statusMessage = "Password reset link sent. Check your email.";
+        _statusMessage = "Password Reset link sent. Check your Email.";
       });
     } catch (e) {
       setState(() {
@@ -78,7 +78,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  "Reset Password",
+                  "Reset Password.",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -87,7 +87,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Enter your email below and we'll send you a link to reset your password.",
+                  "Enter your email below and we'll send you a link to Reset your password.",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 SizedBox(height: 20),
