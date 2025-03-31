@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/setuppassword.dart';
-import 'ResetPassword.dart';
 import 'package:quizgenie/interface/ResetPassword.dart';
 import 'package:quizgenie/Home.dart';
 
@@ -46,7 +44,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login successful!")));
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -86,14 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
             await _firestore.collection('users').doc(user.uid).get();
 
         if (!userDoc.exists) {
-          // New User: Save data & redirect to password setup
           await _firestore.collection('users').doc(user.uid).set({
             'uid': user.uid,
             'name': user.displayName ?? "No Name",
             'email': user.email ?? "",
             'photoURL': user.photoURL ?? "",
             'createdAt': FieldValue.serverTimestamp(),
-            'password': "", // To be set later
           });
 
           Navigator.pushReplacement(
@@ -103,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         } else {
-          // Existing user: Proceed to home
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -122,12 +116,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Color(0xFF271D15),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(32.0),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -186,7 +180,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ResetPasswordScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.brown[800]),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: double.infinity,
                   height: 45,
@@ -194,9 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: _isLoading ? null : _loginUser,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[800],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                     ),
                     child:
                         _isLoading
@@ -217,41 +224,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _isLoading ? null : _signInWithGoogle,
                     icon: Icon(Icons.login, color: Colors.white),
-                    label:
-                        _isLoading
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text(
-                              "Sign in with Google",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
+                    label: Text(
+                      "Sign in with Google",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red[700],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ResetPasswordScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Forgot Password?",
-                      style: TextStyle(
-                        color: Colors.brown[800],
-                        decoration: TextDecoration.underline,
-                      ),
                     ),
                   ),
                 ),

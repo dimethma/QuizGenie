@@ -49,13 +49,10 @@ class _SetupPasswordScreenState extends State<SetupPasswordScreen> {
     }
 
     try {
-      // Update the user document with the password
       await _firestore.collection('users').doc(widget.userId).update({
-        'password':
-            password, // Storing the password (consider hashing it if needed)
+        'password': password,
       });
 
-      // After updating password, you can navigate to the home screen or another page
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -74,14 +71,17 @@ class _SetupPasswordScreenState extends State<SetupPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Setup Password")),
+      appBar: AppBar(
+        title: Text("Setup Password"),
+        backgroundColor: Colors.brown[800],
+      ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(32.0),
           child: Container(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.brown[50],
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -96,7 +96,11 @@ class _SetupPasswordScreenState extends State<SetupPasswordScreen> {
               children: [
                 Text(
                   "Create your password",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown[900],
+                  ),
                 ),
                 SizedBox(height: 20),
                 TextField(
@@ -105,7 +109,7 @@ class _SetupPasswordScreenState extends State<SetupPasswordScreen> {
                   decoration: InputDecoration(
                     labelText: "Password",
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Colors.brown[100],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,
@@ -119,7 +123,7 @@ class _SetupPasswordScreenState extends State<SetupPasswordScreen> {
                   decoration: InputDecoration(
                     labelText: "Confirm Password",
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Colors.brown[100],
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none,

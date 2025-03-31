@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quizgenie/interface/login.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -10,17 +9,36 @@ class ResetPasswordScreen extends StatefulWidget {
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  String _statusMessage = '';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  String _statusMessage = '';
+  Future<void> _resetPassword() async {
+    String email = _emailController.text.trim();
+
+    if (email.isEmpty) {
+      setState(() {
+        _statusMessage = "Please enter your email.";
+      });
+      return;
+    }
+
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      setState(() {
+        _statusMessage = "Password reset link sent. Check your email.";
+      });
+    } catch (e) {
+      setState(() {
+        _statusMessage = "Error: ${e.toString()}";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Color(0xFF271D15), // Dark theme
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -45,7 +63,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 Row(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back),
+                      icon: Icon(Icons.arrow_back, color: Colors.brown[800]),
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
@@ -60,16 +78,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 40),
                 Text(
-                  "Reset password",
+                  "Reset Password",
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.brown,
+                    color: Colors.brown[800],
                   ),
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Enter your email and new password below.",
+                  "Enter your email below and we'll send you a link to reset your password.",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 SizedBox(height: 20),
@@ -86,26 +104,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                TextField(
-                  controller: _passwordController,
-                  decoration: InputDecoration(
-                    labelText: "New Password",
-                    filled: true,
-                    fillColor: Colors.brown[200],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
                   height: 45,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _resetPassword();
-                    },
+                    onPressed: _resetPassword,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.brown[800],
                       shape: RoundedRectangleBorder(
@@ -113,37 +116,24 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                     ),
                     child: Text(
-                      "Reset Password",
+                      "Send Reset Link",
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
-                Text(_statusMessage, style: TextStyle(color: Colors.red)),
+                Center(
+                  child: Text(
+                    _statusMessage,
+                    style: TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  Future<void> _resetPassword() async {
-    String email = _emailController.text.trim();
-    String newPassword = _passwordController.text.trim();
-
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      await _firestore.collection('users').doc(email).set({
-        'password': newPassword,
-      });
-      setState(() {
-        _statusMessage = 'Password reset email sent successfully.';
-      });
-    } catch (e) {
-      setState(() {
-        _statusMessage = 'Failed to send reset email: $e';
-      });
-    }
   }
 }
