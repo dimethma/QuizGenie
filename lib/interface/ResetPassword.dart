@@ -87,7 +87,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Enter your email below and we'll send you a link to reset your password.",
+                  "Enter your email below and we'll send you a link to Reset your password.",
                   style: TextStyle(fontSize: 14, color: Colors.black54),
                 ),
                 SizedBox(height: 20),
