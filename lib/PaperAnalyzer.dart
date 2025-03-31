@@ -105,6 +105,7 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 177, 120, 35),
       appBar: AppBar(title: Text("Paper Analyzer")),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -126,8 +127,8 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.orange,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
+        unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
