@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:quizgenie/QuizG_1.dart';
 import 'package:quizgenie/interface/login.dart';
 
 Future<void> main() async {
