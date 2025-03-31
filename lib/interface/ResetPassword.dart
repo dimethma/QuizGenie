@@ -26,7 +26,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     try {
       await _auth.sendPasswordResetEmail(email: email);
       setState(() {
-        _statusMessage = "Password reset link sent. Check your email.";
+        _statusMessage = "Password Reset link sent. Check your Email.";
       });
     } catch (e) {
       setState(() {
