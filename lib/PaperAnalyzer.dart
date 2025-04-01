@@ -399,10 +399,42 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create New Paper'),
-        actions: [
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Create New Paper',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
+      ),
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+      actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _savePaper,
@@ -563,11 +595,43 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Paper Templates'),
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Paper Templates',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
       ),
-      body: GridView.builder(
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+    ),
+    body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -664,11 +728,43 @@ class TemplateDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(template['title']),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text(
+        template['title'],
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
       ),
-      body: SingleChildScrollView(
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+    ),
+    body:  SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -738,11 +834,43 @@ class UploadOptionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Upload Paper'),
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Upload Paper',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
       ),
-      body: Center(
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+    ),
+    body:  Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
