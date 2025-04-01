@@ -175,9 +175,9 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
     _showCreationOptions(context);
   },
   child: Icon(Icons.add,
-   color: Color.fromARGB(255, 238, 237, 236)), // AppColors.cream equivalent
-  backgroundColor: Color.fromARGB(255, 107, 83, 2), // AppColors.caramel equivalent
-  foregroundColor: Color.fromARGB(255, 238, 237, 236), // AppColors.cream equivalent
+   color: Color.fromARGB(255, 244, 213, 130)), // AppColors.cream equivalent
+  backgroundColor: Color.fromARGB(255, 196, 132, 86), // AppColors.caramel equivalent
+  foregroundColor: Color.fromARGB(255, 244, 213, 130), // AppColors.cream equivalent
   elevation: 4,
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
 ),
