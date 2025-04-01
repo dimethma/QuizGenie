@@ -992,10 +992,42 @@ class FilePreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Preview'),
-        actions: [
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text(
+        'Preview',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
+      ),
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+      actions: [
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
