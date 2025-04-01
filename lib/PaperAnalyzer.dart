@@ -260,17 +260,56 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
     );
   }
  void _showCreationOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Padding(
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, -4),
+            ),
+          ],
+        ),
+        child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Small handle indicator at top
+              Container(
+                width: 40,
+                height: 5,
+                margin: EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               ListTile(
-                leading: const Icon(Icons.create),
-                title: const Text('Create New Paper'),
+                leading: Icon(Icons.create, color: Colors.white),
+                title: Text(
+                  'Create New Paper',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -281,9 +320,19 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                   );
                 },
               ),
+              Divider(color: Colors.white.withOpacity(0.2), height: 1),
               ListTile(
-                leading: const Icon(Icons.upload),
-                title: const Text('Upload Existing Paper'),
+                leading: Icon(Icons.upload, color: Colors.white),
+                title: Text(
+                  'Upload Existing Paper',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -294,9 +343,19 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                   );
                 },
               ),
+              Divider(color: Colors.white.withOpacity(0.2), height: 1),
               ListTile(
-                leading: const Icon(Icons.file_copy),
-                title: const Text('Browse Templates'),
+                leading: Icon(Icons.file_copy, color: Colors.white),
+                title: Text(
+                  'Browse Templates',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -307,9 +366,11 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                   );
                 },
               ),
+              SizedBox(height: 8),
             ],
           ),
-        );
+        ),
+      );
       },
     );
   }
