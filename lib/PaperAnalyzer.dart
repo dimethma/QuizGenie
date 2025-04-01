@@ -171,11 +171,16 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showCreationOptions(context);
-        },
-        child: const Icon(Icons.add),
-      ),
+  onPressed: () {
+    _showCreationOptions(context);
+  },
+  child: Icon(Icons.add,
+   color: Color.fromARGB(255, 238, 237, 236)), // AppColors.cream equivalent
+  backgroundColor: Color.fromARGB(255, 107, 83, 2), // AppColors.caramel equivalent
+  foregroundColor: Color.fromARGB(255, 238, 237, 236), // AppColors.cream equivalent
+  elevation: 4,
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
