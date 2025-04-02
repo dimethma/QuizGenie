@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
         onTap: _onItemTapped,
         selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
         unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
-        backgroundColor: const Color.fromARGB(255, 29, 23, 19),
+        backgroundColor: const Color.fromARGB(255, 48, 37, 29),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
