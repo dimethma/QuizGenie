@@ -5,7 +5,6 @@ import 'package:quizgenie/PaperAnalyzer.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/startup.dart';
-import 'package:quizgenie/tools.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: QuizApp(),
     );
   }
 }
