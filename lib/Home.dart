@@ -28,7 +28,7 @@ class QuizApp extends StatelessWidget {
           iconTheme: IconThemeData(color: Colors.white),
         ),
         cardTheme: CardTheme(
-          color: const Color.fromRGBO(40, 34, 30, 1),
+          color: const Color.fromARGB(255, 56, 46, 40),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
@@ -41,8 +41,21 @@ class QuizApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +126,22 @@ class HomePage extends StatelessWidget {
             title: 'Quiz',
             color: Colors.teal[300]!,
           ),
+        ],
+      ),
+      // Bottom Navigation Bar
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
+        unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Resources',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
