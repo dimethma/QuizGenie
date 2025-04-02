@@ -14,38 +14,39 @@ Future<List<Map<String, dynamic>>> _uploadFilesAndGenerateQuestions(
     return [];
   }
 
-  // API URL
-  String url =
-      'http://10.16.143.122:5000/generate-questions'; // Update if deployed
+  // ✅ Correct API endpoint
+  var url = Uri.parse('http://192.168.8.129:5000/generate-questions');
 
-  // Prepare the files to send in the request
-  var request = http.MultipartRequest('POST', Uri.parse(url));
+  // ✅ Do NOT parse url again — it's already Uri
+  var request = http.MultipartRequest('POST', url);
 
-  // Add the files to the request
+  // ✅ Add files
   for (var filePath in _files) {
     var file = await http.MultipartFile.fromPath(
-      'files', // Field name in the API
+      'files',
       filePath,
-      contentType: MediaType('application', 'pdf'), // Assuming PDF files
+      contentType: MediaType('application', 'pdf'),
     );
     request.files.add(file);
   }
 
-  // Send the request and await the response
-  var response = await request.send();
+  try {
+    var response = await request.send();
 
-  if (response.statusCode == 200) {
-    // If API call is successful, handle the response
-    final responseBody = await response.stream.bytesToString();
-    final data = json.decode(responseBody);
+    if (response.statusCode == 200) {
+      final responseBody = await response.stream.bytesToString();
+      final data = json.decode(responseBody);
 
-    // Extract the generated MCQ questions
-    List<Map<String, dynamic>> questions = List<Map<String, dynamic>>.from(
-      data['questions'],
-    );
-    return questions;
-  } else {
-    print('Failed to generate questions: ${response.statusCode}');
+      List<Map<String, dynamic>> questions = List<Map<String, dynamic>>.from(
+        data['questions'],
+      );
+      return questions;
+    } else {
+      print('❌ Failed to generate questions: ${response.statusCode}');
+      return [];
+    }
+  } catch (e) {
+    print('❌ Exception during request: $e');
     return [];
   }
 }
