@@ -215,11 +215,17 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                     children: [
                       Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
                       Text("Drag & drop a file to upload"),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 50),
                       ElevatedButton(
-                        onPressed: pickFiles,
-                        child: Text("Choose File"),
-                      ),
+                onPressed: pickFiles,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                
+                ),
+                child: const Text('Choose Files',
+                style: TextStyle(color: Colors.white , fontSize: 16),),
+              ),
                     ],
                   ),
                 ],
@@ -236,7 +242,7 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                     ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: analyzePapers,
                 style: ElevatedButton.styleFrom(
