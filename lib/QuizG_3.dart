@@ -5,7 +5,7 @@ class QuizResultPage extends StatelessWidget {
   final int correctAnswers;
   final int totalQuestions;
 
-  QuizResultPage({required this.correctAnswers, required this.totalQuestions});
+  const QuizResultPage({super.key, required this.correctAnswers, required this.totalQuestions});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class QuizResultPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: 95,
                           width: 130, // Set a fixed height
                           child: Expanded(
@@ -71,7 +71,7 @@ class QuizResultPage extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 20),
-                        Container(
+                        SizedBox(
                           height: 95,
                           width: 130, // Set a fixed height
                           child: Expanded(

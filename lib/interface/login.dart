@@ -8,6 +8,8 @@ import 'package:quizgenie/interface/ResetPassword.dart';
 import 'package:quizgenie/Home.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }

@@ -40,6 +40,8 @@ class AppColors {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -85,11 +87,9 @@ class MyApp extends StatelessWidget {
           primary: AppColors.brown,
           secondary: AppColors.caramel,
           surface: AppColors.offWhite,
-          background: AppColors.lightCream,
           onPrimary: AppColors.cream,
           onSecondary: AppColors.cream,
           onSurface: AppColors.darkBrown,
-          onBackground: AppColors.darkBrown,
         ),
       ),
       home: HomeScreen(),
@@ -98,17 +98,19 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  final String? _currentUserId = '123'; // Simulated logged-in user ID
+  final String _currentUserId = '123'; // Simulated logged-in user ID
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _screens = [
+    final List<Widget> screens = [
       FeedScreen(currentUserId: _currentUserId),
       Center(child: Text('Study Groups (Coming Soon)')),
       Center(child: Text('Resources (Coming Soon)')),
@@ -116,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -332,7 +334,7 @@ class PollOption {
 class FeedScreen extends StatefulWidget {
   final String? currentUserId;
 
-  const FeedScreen({Key? key, this.currentUserId}) : super(key: key);
+  const FeedScreen({super.key, this.currentUserId});
 
   @override
   _FeedScreenState createState() => _FeedScreenState();
@@ -655,14 +657,15 @@ class _FeedScreenState extends State<FeedScreen>
 
   void _createPost() {
     if (_postController.text.isEmpty &&
-        (_imageFile == null && !_isCreatingPoll))
+        (_imageFile == null && !_isCreatingPoll)) {
       return;
+    }
 
     final newPost = Post(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       userId: widget.currentUserId,
       content: _postController.text,
-      imageUrl: _imageFile != null ? _imageFile!.path : null,
+      imageUrl: _imageFile?.path,
       timestamp: DateTime.now(),
       isPoll: _isCreatingPoll,
       pollOptions:
@@ -1665,7 +1668,7 @@ class _FeedScreenState extends State<FeedScreen>
                           ),
                         ),
                       );
-                    }).toList(),
+                    }),
                   ],
                 ),
               ),
@@ -3398,7 +3401,7 @@ class _FeedScreenState extends State<FeedScreen>
                   _buildCreatePostCard(),
 
                   // Posts list
-                  ...filteredPosts.map((post) => _buildPostCard(post)).toList(),
+                  ...filteredPosts.map((post) => _buildPostCard(post)),
 
                   // Empty state if no posts
                   if (filteredPosts.isEmpty)
@@ -3507,11 +3510,11 @@ class _FeedScreenState extends State<FeedScreen>
             curve: Curves.easeInOut,
           );
         },
-        child: Icon(Icons.add, color: AppColors.cream),
         backgroundColor: AppColors.caramel,
         foregroundColor: AppColors.cream,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Icon(Icons.add, color: AppColors.cream),
       ),
     );
   }

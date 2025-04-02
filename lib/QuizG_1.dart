@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AddPapersPage extends StatefulWidget {
+  const AddPapersPage({super.key});
+
   @override
   _AddPapersPageState createState() => _AddPapersPageState();
 }
 
 class _AddPapersPageState extends State<AddPapersPage> {
-  List<String> _files = []; // List to store selected file paths
+  final List<String> _files = []; // List to store selected file paths
   final int _maxFiles = 5; // Maximum number of files allowed
 
   // Function to pick files using FilePicker

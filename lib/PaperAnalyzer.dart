@@ -239,7 +239,8 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: analyzePapers,
-              child: Text("Analyze Papers"),
+              child: Text("Analyze Papers")
+              ,
             ),
             
           ],
@@ -405,6 +406,7 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
     appBar: AppBar(
       title: const Text(
         'Create New Paper',
@@ -488,7 +490,7 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _subject,
-                items: ['Mathematics', 'Science', 'History', 'English', 'Geography'].map((subject) {
+                items: ['Mathematics', 'DBMS', 'C#', 'SDTP', 'English'].map((subject) {
                   return DropdownMenuItem(
                     value: subject,
                     child: Text(subject),
@@ -573,34 +575,40 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
       'type': 'MCQ',
       'subject': 'Mathematics',
       'questions': 20,
-      'color': Colors.blue,
+      'color': Color.fromARGB(255, 196, 132, 86),
+      'backgroundColor':Colors.white.withOpacity(0.2),
     },
     {
-      'title': 'History Essay',
+      'title': 'DBMS Essay',
       'type': 'Essay',
-      'subject': 'History',
+      'subject': 'DBMS',
       'questions': 5,
-      'color': Colors.orange,
+      'color': Color.fromARGB(255, 196, 132, 86),
+      'backgroundColor':Colors.white.withOpacity(0.2),
     },
     {
-      'title': 'Science Test',
+      'title': 'C# Test',
       'type': 'Mixed',
-      'subject': 'Science',
+      'subject': 'C#',
       'questions': 15,
-      'color': Colors.green,
+      'color': Color.fromARGB(255, 196, 132, 86),
+      'backgroundColor':Colors.white.withOpacity(0.2),
+      
     },
     {
       'title': 'English Grammar',
       'type': 'MCQ',
       'subject': 'English',
       'questions': 25,
-      'color': Colors.purple,
+      'color': Color.fromARGB(255, 196, 132, 86),
+      'backgroundColor':Colors.white.withOpacity(0.2),
     },
   ];
 
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
     appBar: AppBar(
       title: const Text(
         'Paper Templates',
@@ -734,6 +742,7 @@ class TemplateDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
     appBar: AppBar(
       title: Text(
         template['title'],
@@ -840,6 +849,7 @@ class UploadOptionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
     appBar: AppBar(
       title: const Text(
         'Upload Paper',
@@ -993,6 +1003,7 @@ class FilePreviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   return Scaffold(
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
     appBar: AppBar(
       title: const Text(
         'Preview',
@@ -1092,6 +1103,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
       appBar: AppBar(
         title: const Text('Processing'),
       ),

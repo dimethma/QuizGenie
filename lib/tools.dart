@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({Key? key}) : super(key: key);
+  const CategoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -281,13 +281,13 @@ class CategoryButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     required this.color,
     required this.textColor,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -326,11 +326,11 @@ class NavBarItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const NavBarItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -356,7 +356,7 @@ class NavBarItem extends StatelessWidget {
 // These would normally be in their own dart files in the screens directory
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +371,7 @@ class ChatScreen extends StatelessWidget {
 }
 
 class QuestionGeneratorScreen extends StatelessWidget {
-  const QuestionGeneratorScreen({Key? key}) : super(key: key);
+  const QuestionGeneratorScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +386,7 @@ class QuestionGeneratorScreen extends StatelessWidget {
 }
 
 class QuizScreen extends StatelessWidget {
-  const QuizScreen({Key? key}) : super(key: key);
+  const QuizScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -398,7 +398,7 @@ class QuizScreen extends StatelessWidget {
 }
 
 class PaperAnalyzerScreen extends StatelessWidget {
-  const PaperAnalyzerScreen({Key? key}) : super(key: key);
+  const PaperAnalyzerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -413,7 +413,7 @@ class PaperAnalyzerScreen extends StatelessWidget {
 }
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -425,7 +425,7 @@ class SearchScreen extends StatelessWidget {
 }
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

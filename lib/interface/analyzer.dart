@@ -146,7 +146,7 @@ class PaperAnalyzerApp extends StatelessWidget {
 
   // Updated method with actual implementation for file and image picking
   void _showUploadOptions(BuildContext context) {
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     
     showDialog(
       context: context,
@@ -162,7 +162,7 @@ class PaperAnalyzerApp extends StatelessWidget {
                 Navigator.pop(context);
                 
                 // Pick image from gallery
-                final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+                final XFile? image = await picker.pickImage(source: ImageSource.gallery);
                 if (image != null) {
                   // Process the selected image
                   _processSelectedFile(context, image.path, 'image');
@@ -176,7 +176,7 @@ class PaperAnalyzerApp extends StatelessWidget {
                 Navigator.pop(context);
                 
                 // Capture image using camera
-                final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+                final XFile? photo = await picker.pickImage(source: ImageSource.camera);
                 if (photo != null) {
                   // Process the captured photo
                   _processSelectedFile(context, photo.path, 'image');

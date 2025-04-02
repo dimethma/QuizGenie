@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
 }
 
 class QuizGenieIntroScreen extends StatefulWidget {
-  const QuizGenieIntroScreen({Key? key}) : super(key: key);
+  const QuizGenieIntroScreen({super.key});
 
   @override
   _QuizGenieIntroScreenState createState() => _QuizGenieIntroScreenState();
@@ -238,7 +238,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
 
 // This is a placeholder for the LoginScreen that would be in interface/login.dart
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
