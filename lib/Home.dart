@@ -13,30 +13,22 @@ class QuizApp extends StatelessWidget {
       title: 'QuizGenie',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: const Color.fromRGBO(
-          29,
-          23,
-          19,
-          1,
-        ), // Dark background
+        scaffoldBackgroundColor: const Color.fromRGBO(29, 23, 19, 1),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromRGBO(29, 23, 19, 1), // Match background
+          backgroundColor: Color.fromRGBO(29, 23, 19, 1),
           elevation: 0,
+          centerTitle: true,
           titleTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),
         cardTheme: CardTheme(
-          color: const Color.fromRGBO(
-            40,
-            34,
-            30,
-            1,
-          ), // Slightly lighter than background
+          color: const Color.fromRGBO(40, 34, 30, 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
@@ -55,7 +47,29 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('QuizGenie'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('QuizGenie'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Search functionality coming soon'),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.notifications_none),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No new notifications')),
+              );
+            },
+          ),
+        ],
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         padding: const EdgeInsets.all(16.0),
