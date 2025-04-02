@@ -46,7 +46,7 @@ dependencies:
   google_sign_in: ^6.3.0
   firebase_storage: ^12.4.5
   flutter_dropzone: ^4.0.0   
-  http: ^1.3.0
+  http: ^0.13.5
   http_parser: ^4.1.2
 
 dev_dependencies:

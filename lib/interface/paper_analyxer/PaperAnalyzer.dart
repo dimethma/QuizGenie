@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +7,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_dropzone/flutter_dropzone.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+
+
 
 class PaperAnalyzer extends StatefulWidget {
   @override
@@ -62,6 +66,66 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
       ).showSnackBar(SnackBar(content: Text("Upload failed: $e")));
     }
   }
+  Future<void> generateQuestions(String type) async {
+    Navigator.pop(context);
+    int numQuestions = type == "MCQ" ? 50 : 5;
+
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(child: CircularProgressIndicator()),
+      );
+
+      final response = await http.post(
+        Uri.parse('http://192.168.1.100:5000/generate_questions'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'type': type,
+          'subject': 'Mathematics', // Make dynamic based on user input
+          'difficulty': 'Medium',  // Make dynamic based on user input
+          'num_questions': numQuestions,
+          'files': uploadedFiles, // Send all uploaded file URLs
+        }),
+      );
+
+      Navigator.pop(context); // Dismiss loading
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        
+        await FirebaseFirestore.instance.collection("generated_quizzes").add({
+          "type": type,
+          "num_questions": numQuestions,
+          "source_files": uploadedFiles,
+          "questions": data['questions'],
+          "timestamp": Timestamp.now(),
+          "model": data['model'],
+          "usage": data['usage'],
+        });
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => QuizResultsScreen(
+              questions: List<Map<String, dynamic>>.from(data['questions']),
+              sourceFiles: uploadedFiles,
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error: ${response.body}")),
+        );
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
+  }
+
 
   Future<void> handleDrop(dynamic file) async {
     try {
@@ -114,7 +178,7 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
     );
   }
 
-  Future<void> generateQuestions(String type) async {
+  Future<void> generatesQuestions(String type) async {
     Navigator.pop(context);
     int numQuestions = type == "MCQ" ? 50 : 5;
 
@@ -1226,6 +1290,119 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
                     ],
                   ),
      
+      ),
+    );
+  }
+}
+class QuizResultsScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> questions;
+  final List<String> sourceFiles;
+
+  const QuizResultsScreen({
+    Key? key,
+    required this.questions,
+    required this.sourceFiles,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Generated Questions'),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: questions.length,
+              itemBuilder: (context, index) {
+                final question = questions[index];
+                return QuestionCard(
+                  question: question,
+                  index: index,
+                );
+              },
+            ),
+          ),
+          if (sourceFiles.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Generated from ${sourceFiles.length} source file(s)',
+                style: TextStyle(fontStyle: FontStyle.italic),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuestionCard extends StatelessWidget {
+  final Map<String, dynamic> question;
+  final int index;
+
+  const QuestionCard({
+    Key? key,
+    required this.question,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(8),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Question ${index + 1}: ${question['question']}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            if (question['type'] == 'MCQ') ...[
+              SizedBox(height: 8),
+              ...List<Widget>.from(question['options'].map<Widget>((option) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    '- $option',
+                    style: TextStyle(
+                      color: option == question['correct_answer'] 
+                          ? Colors.green 
+                          : Colors.black,
+                      fontWeight: option == question['correct_answer']
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
+                );
+              })),
+            ],
+            SizedBox(height: 8),
+            Text(
+              'Correct Answer: ${question['correct_answer']}',
+              style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Explanation: ${question['explanation']}',
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            if (question['source'] != null) ...[
+              SizedBox(height: 8),
+              Text(
+                'Source Context:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(
+                question['source'],
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

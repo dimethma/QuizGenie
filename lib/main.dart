@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quizgenie/Home.dart';
-import 'package:quizgenie/PaperAnalyzer.dart';
+import 'package:quizgenie/interface/paper_analyxer/PaperAnalyzer.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/login.dart';
 import 'package:quizgenie/startup.dart';
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: PaperAnalyzer(),
     );
   }
 }
