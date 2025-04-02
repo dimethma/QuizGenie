@@ -215,11 +215,17 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                     children: [
                       Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
                       Text("Drag & drop a file to upload"),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 50),
                       ElevatedButton(
-                        onPressed: pickFiles,
-                        child: Text("Choose File"),
-                      ),
+                onPressed: pickFiles,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                
+                ),
+                child: const Text('Choose Files',
+                style: TextStyle(color: Colors.white , fontSize: 16),),
+              ),
                     ],
                   ),
                 ],
@@ -236,12 +242,17 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
                     ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: analyzePapers,
-              child: Text("Analyze Papers")
-              ,
-            ),
+                onPressed: analyzePapers,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                
+                ),
+                child: const Text('Analyze Papers',
+                style: TextStyle(color: Colors.white , fontSize: 16),),
+              ),
             
           ],
         ),
@@ -418,6 +429,7 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
           letterSpacing: 1.2,
         ),
       ),
+       iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
       elevation: 10,
       backgroundColor: Colors.transparent,
@@ -443,7 +455,7 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
       ),
       actions: [
           IconButton(
-            icon: const Icon(Icons.save),
+            icon: const Icon(Icons.save,color: Colors.white),
             onPressed: _savePaper,
             tooltip: 'Save Paper',
           ),
@@ -535,13 +547,16 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
                   });
                 },
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _savePaper,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                
                 ),
-                child: const Text('Generate Paper'),
+                child: const Text('Generate Paper',
+                style: TextStyle(color: Colors.white , fontSize: 16),),
               ),
             ],
           ),
@@ -620,6 +635,7 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
           letterSpacing: 1.2,
         ),
       ),
+       iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
       elevation: 10,
       backgroundColor: Colors.transparent,
@@ -812,15 +828,20 @@ class TemplateDetailScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Use This Template'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                
+                ),
+                child: const Text('Use This Template',
+                style: TextStyle(color: Colors.white , fontSize: 16),),), 
               ),
-            ),
           ],
         ),
-      ),
-    );
+    ),
+  );
   }
-
+}
   Widget _buildDetailItem(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -841,8 +862,6 @@ class TemplateDetailScreen extends StatelessWidget {
       ),
     );
   }
-}
-
 class UploadOptionsScreen extends StatelessWidget {
   const UploadOptionsScreen({super.key});
 
@@ -861,6 +880,7 @@ class UploadOptionsScreen extends StatelessWidget {
           letterSpacing: 1.2,
         ),
       ),
+       iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
       elevation: 10,
       backgroundColor: Colors.transparent,
@@ -1015,6 +1035,7 @@ class FilePreviewScreen extends StatelessWidget {
           letterSpacing: 1.2,
         ),
       ),
+      iconTheme: IconThemeData(color: Colors.white),
       centerTitle: true,
       elevation: 10,
       backgroundColor: Colors.transparent,
@@ -1040,7 +1061,7 @@ class FilePreviewScreen extends StatelessWidget {
       ),
       actions: [
           IconButton(
-            icon: const Icon(Icons.check),
+            icon: const Icon(Icons.check,color: Colors.white,),
             onPressed: () {
               Navigator.push(
                 context,
@@ -1103,10 +1124,43 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(224, 238, 237, 236),
-      appBar: AppBar(
-        title: const Text('Processing'),
+    backgroundColor: Color.fromARGB(224, 238, 237, 236),
+    appBar: AppBar(
+      title: const Text(
+        'Processing',
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontFamily: 'poppins',
+          letterSpacing: 1.2,
+        ),
       ),
+       iconTheme: IconThemeData(color: Colors.white),
+      centerTitle: true,
+      elevation: 10,
+      backgroundColor: Colors.transparent,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 107, 83, 2),
+              Color.fromARGB(255, 53, 47, 1),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+      ),
+    ),
       body: Center(
         child: _isProcessing
             ? Column(
@@ -1132,12 +1186,22 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
                         'File: ${widget.filePath.split('/').last}',
                         style: const TextStyle(fontSize: 16),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 40,),
                       ElevatedButton(
+                        
                         onPressed: () {
                           Navigator.popUntil(context, (route) => route.isFirst);
+                          
                         },
-                        child: const Text('View Results'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 107, 83, 2), // Background color
+                         foregroundColor: Colors.white, // Text color (alternative to TextStyle)
+                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Button padding
+                          ),
+                        
+                        child: const Text('View Results',
+                        style: TextStyle(color: Colors.white , fontSize: 16), 
+                        ),
                       ),
                     ],
                   )
