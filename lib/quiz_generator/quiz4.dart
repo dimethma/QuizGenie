@@ -5,21 +5,25 @@ class QuizResultPage extends StatelessWidget {
   final int correctAnswers;
   final int totalQuestions;
 
-  const QuizResultPage({super.key, required this.correctAnswers, required this.totalQuestions});
+  const QuizResultPage({
+    super.key,
+    required this.correctAnswers,
+    required this.totalQuestions,
+  });
 
   @override
   Widget build(BuildContext context) {
     double percentage = correctAnswers / totalQuestions;
 
     return Scaffold(
-      backgroundColor: Color(0xFF271D15), // Background color behind the card
+      backgroundColor: Colors.black,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Container(
-            padding: EdgeInsets.all(05), // Space around the card
+            padding: const EdgeInsets.all(5), // Space around the card
             decoration: BoxDecoration(
-              color: Color(0xFF271D15), // Background color
+              color: Colors.black, // Background color
               borderRadius: BorderRadius.circular(20), // Rounded corners
             ),
             child: Card(
@@ -35,11 +39,11 @@ class QuizResultPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "You got $correctAnswers Marks for this",
+                      "You got $correctAnswers out of $totalQuestions correct!",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF271D15),
+                        color: Colors.black,
                       ),
                     ),
                     SizedBox(height: 80),
@@ -54,8 +58,8 @@ class QuizResultPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      progressColor: Color(0xFF874E29),
-                      backgroundColor: Color.fromARGB(127, 244, 214, 130),
+                      progressColor: Colors.orange,
+                      backgroundColor: Colors.grey[300]!,
                       circularStrokeCap: CircularStrokeCap.round,
                     ),
                     SizedBox(height: 5),
@@ -63,23 +67,19 @@ class QuizResultPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        Container(
                           height: 95,
-                          width: 130, // Set a fixed height
-                          child: Expanded(
-                            child: _infoCard("$totalQuestions", "Questions"),
-                          ),
+                          width: 130,
+                          child: _infoCard("$totalQuestions", "Questions"),
                         ),
                         SizedBox(width: 20),
-                        SizedBox(
+                        Container(
                           height: 95,
-                          width: 130, // Set a fixed height
-                          child: Expanded(
-                            child: _infoCard(
-                              "$correctAnswers",
-                              "Marks",
-                              icon: Icons.sentiment_satisfied,
-                            ),
+                          width: 130,
+                          child: _infoCard(
+                            "$correctAnswers",
+                            "Marks",
+                            icon: Icons.sentiment_satisfied,
                           ),
                         ),
                       ],
@@ -88,12 +88,16 @@ class QuizResultPage extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _actionButton(context, "Retry", Color(0xFF874E29), () {
+                        _actionButton(context, "Retry", Colors.orange, () {
                           Navigator.pop(context);
+                          Navigator.pop(context); // Go back to the quiz screen
                         }),
                         SizedBox(width: 20),
-                        _actionButton(context, "Done", Color(0xFF874E29), () {
-                          Navigator.popUntil(context, (route) => route.isFirst);
+                        _actionButton(context, "Done", Colors.orange, () {
+                          Navigator.popUntil(
+                            context,
+                            (route) => route.isFirst,
+                          ); // Go back to the home screen
                         }),
                       ],
                     ),
@@ -111,25 +115,22 @@ class QuizResultPage extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      color: Color(0xFFF4D582),
+      color: Colors.orange,
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null) Icon(icon, color: Color(0xFF874E29), size: 24),
+            if (icon != null) Icon(icon, color: Colors.black, size: 24),
             Text(
               value,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF874E29),
+                color: Colors.black,
               ),
             ),
-            Text(
-              label,
-              style: TextStyle(color: Color.fromARGB(226, 135, 79, 41)),
-            ),
+            Text(label, style: TextStyle(color: Colors.black)),
           ],
         ),
       ),

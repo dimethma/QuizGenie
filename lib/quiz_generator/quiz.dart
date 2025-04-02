@@ -1,22 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:quizgenie/quiz_generator/quiz3.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'dart:convert';
+
+// Function to upload files to the API and get the generated questions
+Future<List<Map<String, dynamic>>> _uploadFilesAndGenerateQuestions(
+  List<String> _files,
+) async {
+  if (_files.isEmpty) {
+    print('No files selected!');
+    return [];
+  }
+
+  // API URL
+  String url =
+      'http://10.16.143.122:5000/generate-questions'; // Update if deployed
+
+  // Prepare the files to send in the request
+  var request = http.MultipartRequest('POST', Uri.parse(url));
+
+  // Add the files to the request
+  for (var filePath in _files) {
+    var file = await http.MultipartFile.fromPath(
+      'files', // Field name in the API
+      filePath,
+      contentType: MediaType('application', 'pdf'), // Assuming PDF files
+    );
+    request.files.add(file);
+  }
+
+  // Send the request and await the response
+  var response = await request.send();
+
+  if (response.statusCode == 200) {
+    // If API call is successful, handle the response
+    final responseBody = await response.stream.bytesToString();
+    final data = json.decode(responseBody);
+
+    // Extract the generated MCQ questions
+    List<Map<String, dynamic>> questions = List<Map<String, dynamic>>.from(
+      data['questions'],
+    );
+    return questions;
+  } else {
+    print('Failed to generate questions: ${response.statusCode}');
+    return [];
+  }
+}
 
 class AddPapersPage extends StatefulWidget {
-  const AddPapersPage({super.key});
-
   @override
   _AddPapersPageState createState() => _AddPapersPageState();
 }
 
 class _AddPapersPageState extends State<AddPapersPage> {
-  final List<String> _files = []; // List to store selected file paths
+  bool _isLoading = false;
+  bool _questionsLoaded = false;
+  List<Question> _generatedQuestions = [];
+
+  List<String> _files = []; // List to store selected file paths
   final int _maxFiles = 5; // Maximum number of files allowed
 
   // Function to pick files using FilePicker
   void _pickFiles() async {
-    if (_files.length >= _maxFiles) return;
+    if (_files.length >= _maxFiles) return; // Limit the number of files
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
+      allowMultiple: true, // Allow multiple files to be selected
     );
     if (result != null) {
       setState(() {
@@ -25,6 +76,39 @@ class _AddPapersPageState extends State<AddPapersPage> {
           result.paths.map((path) => path!).take(_maxFiles - _files.length),
         );
       });
+    }
+  }
+
+  // Function to process papers and generate questions
+  void _processPapers() async {
+    setState(() {
+      _isLoading = true;
+      _questionsLoaded = false;
+    });
+
+    List<Map<String, dynamic>> rawQuestions =
+        await _uploadFilesAndGenerateQuestions(_files);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (rawQuestions.isNotEmpty) {
+      setState(() {
+        _questionsLoaded = true;
+        _generatedQuestions =
+            rawQuestions.map((q) {
+              return Question(
+                questionText: q['questionText'],
+                options: List<String>.from(q['options']),
+                correctAnswerIndex: q['correctAnswerIndex'] ?? 0,
+              );
+            }).toList();
+      });
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to load questions.')));
     }
   }
 
@@ -76,10 +160,18 @@ class _AddPapersPageState extends State<AddPapersPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.create_new_folder, color: Color(0xFF271D15)),
+                  // Create New Folder Icon - Taps to pick files
+                  IconButton(
+                    icon: Icon(
+                      Icons.create_new_folder,
+                      color: Color(0xFF271D15),
+                    ),
+                    onPressed: _pickFiles, // When clicked, pick files
+                  ),
+                  // Folder Icon (This can be used for other purposes if needed)
                   Icon(Icons.folder, color: Color(0xFF271D15)),
+                  // View List Icon (This can be used for listing files, etc.)
                   Icon(Icons.view_list, color: Color(0xFF271D15)),
-                  Icon(Icons.account_tree, color: Color(0xFF271D15)),
                 ],
               ),
             ),
@@ -140,7 +232,7 @@ class _AddPapersPageState extends State<AddPapersPage> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _pickFiles,
+                  onPressed: _processPapers, // Call API to generate questions
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFF4D582),
                   ),
@@ -149,9 +241,14 @@ class _AddPapersPageState extends State<AddPapersPage> {
                     style: TextStyle(color: Color(0xFF271D15)),
                   ),
                 ),
+
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      _files.clear(); // Clear the list if cancel is pressed
+                    });
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFF4D582),
                   ),
@@ -163,13 +260,43 @@ class _AddPapersPageState extends State<AddPapersPage> {
               ],
             ),
 
+            if (_isLoading)
+              Center(
+                child: CircularProgressIndicator(color: Color(0xFFF4D582)),
+              ),
+
+            if (_questionsLoaded)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "✅ Questions Loaded!",
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
             SizedBox(height: 150),
 
             // Next button
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed:
+                    _questionsLoaded
+                        ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => QuizScreen(
+                                    questions: _generatedQuestions,
+                                  ),
+                            ),
+                          );
+                        }
+                        : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFF4D582),
                 ),
