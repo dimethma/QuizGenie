@@ -92,48 +92,30 @@ class _HomePageState extends State<HomePage> {
         children: [
           _buildFeatureCard(
             context,
-            icon: Icons.home,
-            title: 'Home',
-            color: Colors.blue[300]!,
-          ),
-          _buildFeatureCard(
-            context,
-            icon: Icons.auto_awesome,
-            title: 'QuizGenie',
-            color: Colors.purple[300]!,
-          ),
-          _buildFeatureCard(
-            context,
-            icon: Icons.build,
-            title: 'Tools',
-            color: Colors.orange[300]!,
+            icon: Icons.quiz,
+            title: 'Quiz',
+            color: Colors.teal[300]!,
           ),
           _buildFeatureCard(
             context,
             icon: Icons.chat,
             title: 'Chat',
-            color: Colors.green[300]!,
+            color: Colors.purple[300]!,
           ),
           _buildFeatureCard(
             context,
             icon: Icons.question_answer,
             title: 'Question Generator',
-            color: Colors.red[300]!,
-          ),
-          _buildFeatureCard(
-            context,
-            icon: Icons.quiz,
-            title: 'Quiz',
-            color: Colors.teal[300]!,
+            color: Colors.orange[300]!,
           ),
         ],
       ),
-      // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
         unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
+        backgroundColor: const Color.fromARGB(255, 48, 37, 29),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
@@ -161,6 +143,11 @@ class _HomePageState extends State<HomePage> {
         ).showSnackBar(SnackBar(content: Text('Navigating to $title')));
       },
       child: Card(
+        color: const Color.fromARGB(255, 56, 46, 40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        elevation: 4.0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
