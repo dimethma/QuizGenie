@@ -55,7 +55,7 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     });
 
     final uri = Uri.parse(
-      'http://192.168.8.129:5000/analyze-topics',
+      'http://10.244.144.122:5000/analyze-topics',
     ); // Update IP for real device
 
     try {
@@ -97,13 +97,41 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
       appBar: AppBar(
-        title: const Text("Topic Breakdown Analyzer"),
-        backgroundColor: const Color(0xFF6A5200),
-        centerTitle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        title: const Text("Topic Breakdown Analyzer",
+        style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
+            
+          ),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+
+        ),
+            ],
+          ),
+        )
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

@@ -13,7 +13,7 @@ Future<List<Map<String, dynamic>>> _uploadFilesAndGenerateQuestions(
     return [];
   }
 
-  var url = Uri.parse('http://10.16.143.122:5000/generate-questions');
+  var url = Uri.parse('http://10.244.144.122:5000/generate-questions');
 
   var request = http.MultipartRequest('POST', url);
 
