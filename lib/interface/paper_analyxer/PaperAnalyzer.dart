@@ -1,525 +1,236 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_dropzone/flutter_dropzone.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
+class TopicBreakdownAnalyzer extends StatefulWidget {
+  const TopicBreakdownAnalyzer({super.key});
 
-
-
-class PaperAnalyzer extends StatefulWidget {
   @override
-  _PaperAnalyzerState createState() => _PaperAnalyzerState();
+  State<TopicBreakdownAnalyzer> createState() => _TopicBreakdownAnalyzerState();
 }
 
-class _PaperAnalyzerState extends State<PaperAnalyzer> {
-  DropzoneViewController? dropzoneController;
-  List<String> uploadedFiles = [];
-  int _selectedIndex = 0;
-  
+class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
+  bool _isLoading = false;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  File? selectedFile;
+  List<Map<String, dynamic>> topics = [];
 
-  Future<void> pickFiles() async {
-    if (uploadedFiles.length >= 5) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("You can only upload up to 5 papers.")),
-      );
-      return;
-    }
-
+  Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
     );
 
-    if (result != null) {
-      for (var file in result.files) {
-        if (uploadedFiles.length >= 5) break;
-        await uploadFile(file);
-      }
-    }
-  }
-
-  Future<void> uploadFile(PlatformFile file) async {
-    try {
-      Reference ref = FirebaseStorage.instance.ref().child(
-        "papers/${file.name}",
-      );
-      await ref.putData(file.bytes!);
-      String downloadURL = await ref.getDownloadURL();
+    if (result != null && result.files.single.path != null) {
       setState(() {
-        uploadedFiles.add(downloadURL);
+        selectedFile = File(result.files.single.path!);
       });
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Upload failed: $e")));
-    }
-  }
-  Future<void> generateQuestions(String type) async {
-    Navigator.pop(context);
-    int numQuestions = type == "MCQ" ? 50 : 5;
 
-    try {
       showDialog(
         context: context,
-        barrierDismissible: false,
-        builder: (context) => Center(child: CircularProgressIndicator()),
-      );
-
-      final response = await http.post(
-        Uri.parse('http://192.168.1.100:5000/generate_questions'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'type': type,
-          'subject': 'Mathematics', // Make dynamic based on user input
-          'difficulty': 'Medium',  // Make dynamic based on user input
-          'num_questions': numQuestions,
-          'files': uploadedFiles, // Send all uploaded file URLs
-        }),
-      );
-
-      Navigator.pop(context); // Dismiss loading
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        
-        await FirebaseFirestore.instance.collection("generated_quizzes").add({
-          "type": type,
-          "num_questions": numQuestions,
-          "source_files": uploadedFiles,
-          "questions": data['questions'],
-          "timestamp": Timestamp.now(),
-          "model": data['model'],
-          "usage": data['usage'],
-        });
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuizResultsScreen(
-              questions: List<Map<String, dynamic>>.from(data['questions']),
-              sourceFiles: uploadedFiles,
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error: ${response.body}")),
-        );
-      }
-    } catch (e) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
-  }
-
-
-  Future<void> handleDrop(dynamic file) async {
-    try {
-      if (dropzoneController == null) return;
-
-      String name = await dropzoneController!.getFilename(file);
-      final bytes = await dropzoneController!.getFileData(file);
-
-      Reference ref = FirebaseStorage.instance.ref().child("papers/$name");
-      await ref.putData(bytes);
-      String downloadURL = await ref.getDownloadURL();
-
-      setState(() {
-        uploadedFiles.add(downloadURL);
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error uploading file: $e")));
-    }
-  }
-
-  void analyzePapers() {
-    if (uploadedFiles.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please upload at least one paper.")),
-      );
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text("Select Question Type"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton(
-                  onPressed: () => generateQuestions("MCQ"),
-                  child: Text("MCQ Questions"),
-                ),
-                ElevatedButton(
-                  onPressed: () => generateQuestions("Essay"),
-                  child: Text("Essay Questions"),
+        builder:
+            (_) => AlertDialog(
+              title: const Text("Success"),
+              content: const Text("File loaded successfully."),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
                 ),
               ],
             ),
-          ),
-    );
+      );
+    }
   }
 
-  Future<void> generatesQuestions(String type) async {
-    Navigator.pop(context);
-    int numQuestions = type == "MCQ" ? 50 : 5;
+  Future<void> analyzeTopics() async {
+    if (selectedFile == null) return;
 
-    FirebaseFirestore.instance.collection("generated_quizzes").add({
-      "type": type,
-      "num_questions": numQuestions,
-      "papers": uploadedFiles,
-      "timestamp": Timestamp.now(),
+    setState(() {
+      _isLoading = true;
+      topics.clear(); // Optional: clear previous results
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("$numQuestions $type questions generated!")),
-    );
-  }
+    final uri = Uri.parse(
+      'http://192.168.8.129:5000/analyze-topics',
+    ); // Update IP for real device
 
+    try {
+      final request = http.MultipartRequest('POST', uri);
+      request.files.add(
+        await http.MultipartFile.fromPath('files', selectedFile!.path),
+      );
+
+      final response = await request.send().timeout(
+        const Duration(seconds: 25),
+        onTimeout: () {
+          throw Exception("Connection timed out. Check backend IP or network.");
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final resBody = await response.stream.bytesToString();
+        final decoded = json.decode(resBody);
+        setState(() {
+          topics = List<Map<String, dynamic>>.from(decoded['topics']);
+        });
+      } else {
+        debugPrint('Failed: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to analyze the file')),
+        );
+      }
+    } catch (e) {
+      debugPrint("❌ Error occurred: $e");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('❌ Error: $e')));
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(224, 238, 237, 236),
       appBar: AppBar(
-        title: Text(
-          "Generate Your Paper",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontFamily: 'poppins',
-            letterSpacing: 1.2,
-            
-          ),
-        ),
+        title: const Text("Topic Breakdown Analyzer"),
+        backgroundColor: const Color(0xFF6A5200),
         centerTitle: true,
-        elevation: 10,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 107, 83, 2),
-                Color.fromARGB(255, 53, 47, 1),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-  onPressed: () {
-    _showCreationOptions(context);
-  },
-  child: Icon(Icons.add,
-   color: Color.fromARGB(255, 244, 213, 130)), // AppColors.cream equivalent
-  backgroundColor: Color.fromARGB(255, 196, 132, 86), // AppColors.caramel equivalent
-  foregroundColor: Color.fromARGB(255, 244, 213, 130), // AppColors.cream equivalent
-  elevation: 4,
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-),
       body: Padding(
-    padding: EdgeInsets.all(16.0),
-    child: Column(
-      children: [
-        Text(
-          "Step 1: Upload File",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 20),
-        Container(
-          width: double.infinity,
-          height: 300,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey,
-              style: BorderStyle.solid,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          children: [
+            const Text(
+              'Step 1: Upload File',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              DropzoneView(
-                onCreated: (controller) => setState(() => dropzoneController = controller),
-                onDrop: handleDrop,
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade400),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
-                  Text("Drag & drop a file to upload"),
-                  const SizedBox(height: 50),
+                  const Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  const Text('Drag & drop a file to upload'),
+                  const SizedBox(height: 6),
+                  const Text(
+                    'DropzoneView: TargetPlatform.android is not supported',
+                    style: TextStyle(fontSize: 13, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 10),
                   ElevatedButton(
-                    onPressed: pickFiles,
+                    onPressed: pickFile,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                      backgroundColor: const Color(0xFF6A5200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
-                    child: const Text('Choose Files',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    child: const Text(
+                      'Choose Files',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
-        // Moved the Analyze Paper button here, right after the dropzone
-        ElevatedButton(
-          onPressed: analyzePapers,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Color.fromARGB(255, 107, 83, 2),
-            minimumSize: Size(double.infinity, 50), // Making it full width
-          ),
-          child: const Text('Analyze Paper',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        ),
-        SizedBox(height: 20),
-        Expanded(
-          child: ListView.builder(
-            itemCount: uploadedFiles.length,
-            itemBuilder: (context, index) => ListTile(
-              title: Text(uploadedFiles[index]),
-              leading: Icon(Icons.file_present),
             ),
-          ),
-        ),
-        // Analysis Progress UI to be placed under the "Analyze Paper" button
-Container(
-  width: double.infinity,
-  padding: EdgeInsets.all(16),
-  decoration: BoxDecoration(
-    color: Color(0xFF292919),
-    borderRadius: BorderRadius.circular(10),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // Analysis Progress section
-      Text(
-        "Analysis Progress",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      SizedBox(height: 8),
-      LinearProgressIndicator(
-        value: 0.0, // 0% completed
-        backgroundColor: Colors.grey.shade800,
-        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
-        minHeight: 8,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      SizedBox(height: 4),
-      Text(
-        "0% completed",
-        style: TextStyle(
-          color: Colors.grey.shade400,
-          fontSize: 12,
-        ),
-      ),
-      SizedBox(height: 24),
-      
-      // Content Breakdown section
-      Text(
-        "Content Breakdown",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      SizedBox(height: 8),
-      Text(
-        "100%",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Row(
-        children: [
-          Text(
-            "Current Analysis ",
-            style: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 14,
-            ),
-          ),
-          Text(
-            "+0%",
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: 24),
-      
-      // Sets section
-      Row(
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              "Sets",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _isLoading ? null : analyzeTopics,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6A5200),
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
+              child:
+                  _isLoading
+                      ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                      : const Text(
+                        'AI Topic Breakdown',
+                        style: TextStyle(color: Colors.white),
+                      ),
             ),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: 0.7,
-              backgroundColor: Colors.grey.shade800,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: 16),
-      
-      // Normal Distribution section
-      Row(
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              "Normal Distribution",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
+            const SizedBox(height: 20),
+            if (topics.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: topics.length,
+                  itemBuilder: (context, index) {
+                    final topic = topics[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${index + 1}. ${topic['topic']}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ...List.from(
+                              topic['features'],
+                            ).map((f) => Text("- $f")).toList(),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: 0.9,
-              backgroundColor: Colors.grey.shade800,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: const Color(0xFF9A7300),
+        unselectedItemColor: const Color(0xFF6A5200),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
         ],
       ),
-      SizedBox(height: 16),
-      
-      // Fractions section
-      Row(
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              "Fractions",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: 0.6,
-              backgroundColor: Colors.grey.shade800,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-        ],
-      ),
-      SizedBox(height: 16),
-      
-      // Others section
-      Row(
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              "Others",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: 0.65,
-              backgroundColor: Colors.grey.shade800,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
-              minHeight: 10,
-              borderRadius: BorderRadius.circular(5),
-            ),
-          ),
-        ],
-      ),
-    ],
-  ),
-)
-      ],
-    ),
-  ),
-  // Bottom Navigation Bar
-  bottomNavigationBar: BottomNavigationBar(
-    currentIndex: _selectedIndex,
-    onTap: _onItemTapped,
-    selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
-    unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
-    items: [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-      BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book),
-        label: 'Resources',
-      ),
-      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFFD28A56),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        onPressed: () {},
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
- void _showCreationOptions(BuildContext context) {
+  void _showCreationOptions(BuildContext context) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -1067,7 +778,7 @@ class TemplateDetailScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PaperAnalyzer(),
+                      builder: (context) => TopicBreakdownAnalyzer(),
                     ),
                   );
                 },
@@ -1586,3 +1297,4 @@ class QuestionCard extends StatelessWidget {
     );
   }
 }
+
