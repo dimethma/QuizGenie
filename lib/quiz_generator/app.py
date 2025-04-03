@@ -82,6 +82,78 @@ def generate_questions():
         traceback.print_exc()
         return jsonify({"error": "Failed to generate questions", "details": str(e)}), 500
 
+
+@app.route('/analyze-topics', methods=['POST'])
+def analyze_topics():
+    print("📥 Request received")
+
+    if 'files' not in request.files:
+        print("❌ No files part in request")
+        return jsonify({"error": "No files uploaded"}), 400
+
+    files = request.files.getlist('files')
+    print(f"📄 Files received: {len(files)}")
+
+    all_text = ""
+
+    for file in files:
+        text = extract_text_from_pdf(file)
+        print(f"📄 Extracted {len(text)} characters from file.")
+        all_text += text
+
+    try:
+        print("🤖 Sending to OpenAI...")
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that analyzes academic exam papers and summarizes the main topics covered along with their key features in JSON format."
+                },
+                {
+                    "role": "user",
+                    "content": f"Analyze the following exam content and return a list of topics discussed along with their key features. Use this JSON format:\n\n[\n  {{ \"topic\": \"Topic Name\", \"features\": [\"feature 1\", \"feature 2\"] }},\n  ...\n]\n\nHere is the content:\n\n{all_text}"
+                }
+            ],
+            temperature=0.6,
+            max_tokens=1500,
+        )
+
+        content = response.choices[0].message.content
+        print("✅ OpenAI response received")
+        print("🧠 Raw response:\n", content)
+
+        # ✅ Strip markdown formatting if present
+        if content.startswith("```json"):
+            content = content.strip("```json").strip("```").strip()
+
+        # ✅ Extract JSON block
+        start = content.find('[')
+        end = content.rfind(']')
+        if start != -1 and end != -1:
+            content = content[start:end + 1]
+
+        print("🧪 Extracted JSON block:")
+        print(content)
+
+        # ✅ Parse JSON content
+        try:
+            topics = json.loads(content)
+        except json.JSONDecodeError as e:
+            print("❌ JSON parsing error:", e)
+            return jsonify({"error": "OpenAI returned invalid JSON", "details": str(e)}), 500
+
+        print("📚 Topics extracted successfully.")
+        return jsonify({"topics": topics})
+
+    except Exception as e:
+        print("❌ Exception occurred:")
+        traceback.print_exc()
+        return jsonify({"error": "Failed to analyze topics", "details": str(e)}), 500
+
+
+
+
 # ✅ Run server
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
