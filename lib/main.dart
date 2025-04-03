@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AddPapersPage(),
+      home: QuizGenieIntroScreen(),
     );
   }
 }
