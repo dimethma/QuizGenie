@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quizgenie/Home.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/login.dart';
+import 'package:quizgenie/quiz_generator/quiz.dart';
 import 'package:quizgenie/startup.dart';
 
 Future<void> main() async {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.brown,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: QuizApp(),
+      home: AddPapersPage(),
     );
   }
 }

@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
-// Function to upload files to the API and get the generated questions
 Future<List<Map<String, dynamic>>> _uploadFilesAndGenerateQuestions(
   List<String> _files,
 ) async {
@@ -14,13 +13,10 @@ Future<List<Map<String, dynamic>>> _uploadFilesAndGenerateQuestions(
     return [];
   }
 
-  // ✅ Correct API endpoint
-  var url = Uri.parse('http://192.168.8.129:5000/generate-questions');
+  var url = Uri.parse('http://10.16.143.122:5000/generate-questions');
 
-  // ✅ Do NOT parse url again — it's already Uri
   var request = http.MultipartRequest('POST', url);
 
-  // ✅ Add files
   for (var filePath in _files) {
     var file = await http.MultipartFile.fromPath(
       'files',
@@ -61,18 +57,16 @@ class _AddPapersPageState extends State<AddPapersPage> {
   bool _questionsLoaded = false;
   List<Question> _generatedQuestions = [];
 
-  List<String> _files = []; // List to store selected file paths
-  final int _maxFiles = 5; // Maximum number of files allowed
+  List<String> _files = [];
+  final int _maxFiles = 5;
 
-  // Function to pick files using FilePicker
   void _pickFiles() async {
-    if (_files.length >= _maxFiles) return; // Limit the number of files
+    if (_files.length >= _maxFiles) return;
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true, // Allow multiple files to be selected
+      allowMultiple: true,
     );
     if (result != null) {
       setState(() {
-        // Add selected files to the list, ensuring max limit is not exceeded
         _files.addAll(
           result.paths.map((path) => path!).take(_maxFiles - _files.length),
         );
@@ -80,7 +74,6 @@ class _AddPapersPageState extends State<AddPapersPage> {
     }
   }
 
-  // Function to process papers and generate questions
   void _processPapers() async {
     setState(() {
       _isLoading = true;
@@ -113,7 +106,6 @@ class _AddPapersPageState extends State<AddPapersPage> {
     }
   }
 
-  // Function to remove a file from the list
   void _removeFile(int index) {
     setState(() {
       _files.removeAt(index);
@@ -123,15 +115,15 @@ class _AddPapersPageState extends State<AddPapersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF271D15), // Background color
+      backgroundColor: Color(0xFF271D15),
       appBar: AppBar(
-        backgroundColor: Color(0xFF271D15), // AppBar background
+        backgroundColor: Color(0xFF271D15),
         title: Text(
           "Add Papers",
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
-            color: Color(0xFFF4D582), // Text color for contrast
+            color: Color(0xFFF4D582),
           ),
         ),
       ),
@@ -140,18 +132,16 @@ class _AddPapersPageState extends State<AddPapersPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Instructional text
             Text(
               "Access up to $_maxFiles sample papers for practice and preparation.",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFFF4D582), // Lighter text for visibility
+                color: Color(0xFFF4D582),
               ),
             ),
             SizedBox(height: 20),
 
-            // Colored bar with icons
             Container(
               height: 50,
               decoration: BoxDecoration(
@@ -161,24 +151,20 @@ class _AddPapersPageState extends State<AddPapersPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Create New Folder Icon - Taps to pick files
                   IconButton(
                     icon: Icon(
                       Icons.create_new_folder,
                       color: Color(0xFF271D15),
                     ),
-                    onPressed: _pickFiles, // When clicked, pick files
+                    onPressed: _pickFiles,
                   ),
-                  // Folder Icon (This can be used for other purposes if needed)
                   Icon(Icons.folder, color: Color(0xFF271D15)),
-                  // View List Icon (This can be used for listing files, etc.)
                   Icon(Icons.view_list, color: Color(0xFF271D15)),
                 ],
               ),
             ),
             SizedBox(height: 10),
 
-            // File upload section
             GestureDetector(
               onTap: _pickFiles,
               child: Container(
@@ -208,13 +194,12 @@ class _AddPapersPageState extends State<AddPapersPage> {
             ),
             SizedBox(height: 10),
 
-            // List of selected files
             Expanded(
               child: ListView.builder(
                 itemCount: _files.length,
                 itemBuilder:
                     (context, index) => Card(
-                      color: Color(0xFFF4D582), // Light background for contrast
+                      color: Color(0xFFF4D582),
                       child: ListTile(
                         title: Text(
                           _files[index],
@@ -229,11 +214,10 @@ class _AddPapersPageState extends State<AddPapersPage> {
               ),
             ),
 
-            // Buttons
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _processPapers, // Call API to generate questions
+                  onPressed: _processPapers,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFF4D582),
                   ),
@@ -247,7 +231,7 @@ class _AddPapersPageState extends State<AddPapersPage> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      _files.clear(); // Clear the list if cancel is pressed
+                      _files.clear();
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -278,9 +262,8 @@ class _AddPapersPageState extends State<AddPapersPage> {
                 ),
               ),
 
-            SizedBox(height: 150),
+            SizedBox(height: 40),
 
-            // Next button
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
