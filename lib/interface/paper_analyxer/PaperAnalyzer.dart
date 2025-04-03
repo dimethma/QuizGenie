@@ -246,96 +246,275 @@ class _PaperAnalyzerState extends State<PaperAnalyzer> {
   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
 ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              "Step 1: Upload File",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    padding: EdgeInsets.all(16.0),
+    child: Column(
+      children: [
+        Text(
+          "Step 1: Upload File",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20),
+        Container(
+          width: double.infinity,
+          height: 300,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey,
+              style: BorderStyle.solid,
             ),
-            SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              height: 300,
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey,
-                  style: BorderStyle.solid,
-                ),
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              DropzoneView(
+                onCreated: (controller) => setState(() => dropzoneController = controller),
+                onDrop: handleDrop,
               ),
-              child: Stack(
-                alignment: Alignment.center,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  DropzoneView(
-                    onCreated:
-                        (controller) =>
-                            setState(() => dropzoneController = controller),
-                    onDrop: handleDrop,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
-                      Text("Drag & drop a file to upload"),
-                      const SizedBox(height: 50),
-                      ElevatedButton(
-                onPressed: pickFiles,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
-                
-                ),
-                child: const Text('Choose Files',
-                style: TextStyle(color: Colors.white , fontSize: 16),),
-              ),
-                    ],
+                  Icon(Icons.cloud_upload, size: 50, color: Colors.grey),
+                  Text("Drag & drop a file to upload"),
+                  const SizedBox(height: 50),
+                  ElevatedButton(
+                    onPressed: pickFiles,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: Color.fromARGB(255, 107, 83, 2),
+                    ),
+                    child: const Text('Choose Files',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: uploadedFiles.length,
-                itemBuilder:
-                    (context, index) => ListTile(
-                      title: Text(uploadedFiles[index]),
-                      leading: Icon(Icons.file_present),
-                    ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: analyzePapers,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Color.fromARGB(255, 107, 83, 2),
-                
-                ),
-                child: const Text('Analyze Papers',
-                style: TextStyle(color: Colors.white , fontSize: 16),),
-              ),
-            
-          ],
-        ),
-        
-      ),
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
-        unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Resources',
+            ],
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ),
+        SizedBox(height: 20),
+        // Moved the Analyze Paper button here, right after the dropzone
+        ElevatedButton(
+          onPressed: analyzePapers,
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: Color.fromARGB(255, 107, 83, 2),
+            minimumSize: Size(double.infinity, 50), // Making it full width
+          ),
+          child: const Text('Analyze Paper',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ),
+        SizedBox(height: 20),
+        Expanded(
+          child: ListView.builder(
+            itemCount: uploadedFiles.length,
+            itemBuilder: (context, index) => ListTile(
+              title: Text(uploadedFiles[index]),
+              leading: Icon(Icons.file_present),
+            ),
+          ),
+        ),
+        // Analysis Progress UI to be placed under the "Analyze Paper" button
+Container(
+  width: double.infinity,
+  padding: EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Color(0xFF292919),
+    borderRadius: BorderRadius.circular(10),
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Analysis Progress section
+      Text(
+        "Analysis Progress",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      SizedBox(height: 8),
+      LinearProgressIndicator(
+        value: 0.0, // 0% completed
+        backgroundColor: Colors.grey.shade800,
+        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
+        minHeight: 8,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      SizedBox(height: 4),
+      Text(
+        "0% completed",
+        style: TextStyle(
+          color: Colors.grey.shade400,
+          fontSize: 12,
+        ),
+      ),
+      SizedBox(height: 24),
+      
+      // Content Breakdown section
+      Text(
+        "Content Breakdown",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      SizedBox(height: 8),
+      Text(
+        "100%",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 48,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Row(
+        children: [
+          Text(
+            "Current Analysis ",
+            style: TextStyle(
+              color: Colors.grey.shade400,
+              fontSize: 14,
+            ),
+          ),
+          Text(
+            "+0%",
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 24),
+      
+      // Sets section
+      Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              "Sets",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: 0.7,
+              backgroundColor: Colors.grey.shade800,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
+              minHeight: 10,
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 16),
+      
+      // Normal Distribution section
+      Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              "Normal Distribution",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: 0.9,
+              backgroundColor: Colors.grey.shade800,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
+              minHeight: 10,
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 16),
+      
+      // Fractions section
+      Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              "Fractions",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: 0.6,
+              backgroundColor: Colors.grey.shade800,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
+              minHeight: 10,
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 16),
+      
+      // Others section
+      Row(
+        children: [
+          SizedBox(
+            width: 100,
+            child: Text(
+              "Others",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: 0.65,
+              backgroundColor: Colors.grey.shade800,
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFB8A765)),
+              minHeight: 10,
+              borderRadius: BorderRadius.circular(5),
+            ),
+          ),
+        ],
+      ),
+    ],
+  ),
+)
+      ],
+    ),
+  ),
+  // Bottom Navigation Bar
+  bottomNavigationBar: BottomNavigationBar(
+    currentIndex: _selectedIndex,
+    onTap: _onItemTapped,
+    selectedItemColor: const Color.fromARGB(255, 177, 120, 35),
+    unselectedItemColor: const Color.fromARGB(255, 78, 44, 4),
+    items: [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Groups'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.menu_book),
+        label: 'Resources',
+      ),
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
