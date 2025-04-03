@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quizgenie/Home.dart';
 import 'package:quizgenie/chat.dart';
 import 'package:quizgenie/interface/login.dart';
+import 'package:quizgenie/interface/paper_analyxer/PaperAnalyzer.dart';
 import 'package:quizgenie/quiz_generator/quiz.dart';
 import 'package:quizgenie/startup.dart';
 

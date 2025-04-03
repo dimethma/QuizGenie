@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:quizgenie/interface/paper_analyxer/PaperAnalyzer.dart';
+import 'package:quizgenie/quiz_generator/quiz.dart';
+
+import 'chat.dart';
 
 void main() {
   runApp(const QuizApp());
@@ -92,21 +96,39 @@ class _HomePageState extends State<HomePage> {
         children: [
           _buildFeatureCard(
             context,
-            icon: Icons.quiz,
-            title: 'Quiz',
-            color: Colors.teal[300]!,
+            icon: Icons.question_answer,
+            title: 'Question Generator',
+            color: Colors.orange[300]!,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddPapersPage()),
+              );
+            },
           ),
           _buildFeatureCard(
             context,
             icon: Icons.chat,
             title: 'Chat',
             color: Colors.purple[300]!,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
+              );
+            },
           ),
           _buildFeatureCard(
             context,
-            icon: Icons.question_answer,
-            title: 'Question Generator',
-            color: Colors.orange[300]!,
+            icon: Icons.quiz,
+            title: 'Quiz',
+            color: Colors.teal[300]!,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PaperAnalyzer()),
+              );
+            },
           ),
         ],
       ),
@@ -134,14 +156,11 @@ class _HomePageState extends State<HomePage> {
     required IconData icon,
     required String title,
     required Color color,
+    required VoidCallback onTap,
   }) {
     return InkWell(
       borderRadius: BorderRadius.circular(12.0),
-      onTap: () {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Navigating to $title')));
-      },
+      onTap: onTap,
       child: Card(
         color: const Color.fromARGB(255, 56, 46, 40),
         shape: RoundedRectangleBorder(
