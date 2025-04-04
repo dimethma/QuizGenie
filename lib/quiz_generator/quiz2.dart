@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizgenie/quiz_generator/quiz3.dart';
 
-// Simulate a list of questions (In your real app, you would generate these from files or an API)
 List<Question> sampleQuestions = [
   Question(
     questionText: 'What does HTTP stand for?',
@@ -23,7 +22,6 @@ List<Question> sampleQuestions = [
     ],
     correctAnswerIndex: 1,
   ),
-  // Add more questions as needed
 ];
 
 class AddPapersPage extends StatelessWidget {

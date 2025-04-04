@@ -21,10 +21,10 @@ class QuizResultPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Container(
-            padding: const EdgeInsets.all(5), // Space around the card
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: Colors.black, // Background color
-              borderRadius: BorderRadius.circular(20), // Rounded corners
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Card(
               elevation: 6,
@@ -90,14 +90,11 @@ class QuizResultPage extends StatelessWidget {
                       children: [
                         _actionButton(context, "Retry", Colors.orange, () {
                           Navigator.pop(context);
-                          Navigator.pop(context); // Go back to the quiz screen
+                          Navigator.pop(context);
                         }),
                         SizedBox(width: 20),
                         _actionButton(context, "Done", Colors.orange, () {
-                          Navigator.popUntil(
-                            context,
-                            (route) => route.isFirst,
-                          ); // Go back to the home screen
+                          Navigator.popUntil(context, (route) => route.isFirst);
                         }),
                       ],
                     ),

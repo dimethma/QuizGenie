@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async'; // For Timer
+import 'dart:async';
 
-// Define the Question class
 class Question {
   final String questionText;
   final List<String> options;
@@ -15,8 +14,7 @@ class Question {
 }
 
 class QuizScreen extends StatefulWidget {
-  final List<Question>
-  questions; // Accepting questions as a constructor parameter
+  final List<Question> questions;
 
   const QuizScreen({super.key, required this.questions});
 
@@ -42,7 +40,7 @@ class _QuizScreenState extends State<QuizScreen> {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_remainingSeconds == 0) {
         timer.cancel();
-        // Show auto submit or message here if time ends
+
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('⏰ Time is up!')));
@@ -125,7 +123,6 @@ class _QuizScreenState extends State<QuizScreen> {
                 if (currentQuestionIndex < widget.questions.length - 1) {
                   moveToNextQuestion();
                 } else {
-                  // Go to result screen when it's the last question
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

@@ -39,13 +39,11 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
   void initState() {
     super.initState();
 
-    // Initialize animation controller
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
 
-    // Create a sliding animation for the arrows
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0),
       end: const Offset(0, -0.3),
@@ -66,12 +64,10 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
       body: GestureDetector(
         onVerticalDragEnd: (details) {
           if (details.primaryVelocity! < 0) {
-            // Swipe up detected
             navigateToLogin();
           }
         },
         onTap: () {
-          // Also navigate on tap
           navigateToLogin();
         },
         child: Container(
@@ -82,18 +78,16 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
               colors: [
                 Colors.black,
                 Colors.black,
-                Color(
-                  0xFFB8860B,
-                ).withOpacity(0.5), // More golden color at bottom
+                Color(0xFFB8860B).withOpacity(0.5),
               ],
-              stops: const [0.0, 0.7, 1.0], // Adjust gradient positioning
+              stops: const [0.0, 0.7, 1.0],
             ),
           ),
           child: SafeArea(
             child: Column(
               children: [
                 const SizedBox(height: 70),
-                // Logo and book
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -105,7 +99,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                             style: TextStyle(
                               fontSize: 48,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFFD4AF37), // Gold color for Q
+                              color: Color(0xFFD4AF37),
                             ),
                           ),
                           TextSpan(
@@ -121,7 +115,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                             style: TextStyle(
                               fontSize: 48,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFFD4AF37), // Gold color for Q
+                              color: Color(0xFFD4AF37),
                             ),
                           ),
                           TextSpan(
@@ -140,13 +134,13 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                       angle: 0.1,
                       child: Icon(
                         Icons.menu_book,
-                        color: Color(0xFFD4AF37), // Gold color for book
+                        color: Color(0xFFD4AF37),
                         size: 24,
                       ),
                     ),
                   ],
                 ),
-                // Question marks - positioned to right
+
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
@@ -155,14 +149,14 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                       "? \n? ? \n? ?",
                       style: TextStyle(
                         fontSize: 18,
-                        color: Color(0xFFD4AF37), // Gold color
+                        color: Color(0xFFD4AF37),
                         height: 0.8,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Tagline
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Text(
@@ -177,7 +171,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                   ),
                 ),
                 const SizedBox(height: 15),
-                // Subtitle
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Text(
@@ -190,7 +184,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                   ),
                 ),
                 Spacer(),
-                // Animated Arrows - just 3 arrows as shown in image
+
                 SlideTransition(
                   position: _slideAnimation,
                   child: Column(
@@ -214,7 +208,7 @@ class _QuizGenieIntroScreenState extends State<QuizGenieIntroScreen>
                   ),
                 ),
                 const SizedBox(height: 5),
-                // Swipe up text
+
                 Text(
                   "Swipe up to continue",
                   style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
