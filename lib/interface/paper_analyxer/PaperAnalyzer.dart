@@ -46,7 +46,14 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
                   onPressed: () {
                     Navigator.of(dialogContext).pop(); // Dismiss dialog only
                   },
-                  child: const Text("OK"),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6A5200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  child: const Text("OK",
+                  style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),
