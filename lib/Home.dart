@@ -14,6 +14,7 @@ class QuizApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'QuizGenie',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -126,9 +127,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => TopicBreakdownAnalyzer(),
-                ),
+                MaterialPageRoute(builder: (context) => TopicBreakdownAnalyzer()),
               );
             },
           ),

@@ -25,20 +25,35 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     );
 
     if (result != null && result.files.single.path != null) {
+      if (!mounted) return;
+
       setState(() {
         selectedFile = File(result.files.single.path!);
       });
 
-      showDialog(
+      // Ensure dialog shows after the widget is still mounted
+      if (!mounted) return;
+
+      // Use 'await' to pause until user closes the dialog
+      await showDialog(
         context: context,
         builder:
-            (_) => AlertDialog(
+            (dialogContext) => AlertDialog(
               title: const Text("Success"),
               content: const Text("File loaded successfully."),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Dismiss dialog only
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6A5200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                  child: const Text("OK",
+                  style: TextStyle(color: Colors.white),),
                 ),
               ],
             ),
@@ -55,7 +70,7 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     });
 
     final uri = Uri.parse(
-      'http://192.168.8.129:5000/analyze-topics',
+      'http://10.244.144.122:5000/analyze-topics',
     ); // Update IP for real device
 
     try {
@@ -94,16 +109,45 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
       appBar: AppBar(
-        title: const Text("Topic Breakdown Analyzer"),
-        backgroundColor: const Color(0xFF6A5200),
-        centerTitle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        title: const Text("Topic Breakdown Analyzer",
+        style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
+            
+          ),
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+
+        ),
+            ],
+          ),
+        )
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -230,118 +274,119 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
       ),
     );
   }
+
   void _showCreationOptions(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    backgroundColor: Colors.transparent,
-    builder: (context) {
-      return Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, -4),
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Small handle indicator at top
-              Container(
-                width: 40,
-                height: 5,
-                margin: EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, -4),
               ),
-              ListTile(
-                leading: Icon(Icons.create, color: Colors.white),
-                title: Text(
-                  'Create New Paper',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CreatePaperScreen(),
-                    ),
-                  );
-                },
-              ),
-              Divider(color: Colors.white.withOpacity(0.2), height: 1),
-              ListTile(
-                leading: Icon(Icons.upload, color: Colors.white),
-                title: Text(
-                  'Upload Existing Paper',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const UploadOptionsScreen(),
-                    ),
-                  );
-                },
-              ),
-              Divider(color: Colors.white.withOpacity(0.2), height: 1),
-              ListTile(
-                leading: Icon(Icons.file_copy, color: Colors.white),
-                title: Text(
-                  'Browse Templates',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const TemplateGalleryScreen(),
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 8),
             ],
           ),
-        ),
-      );
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Small handle indicator at top
+                Container(
+                  width: 40,
+                  height: 5,
+                  margin: EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.create, color: Colors.white),
+                  title: Text(
+                    'Create New Paper',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CreatePaperScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(color: Colors.white.withOpacity(0.2), height: 1),
+                ListTile(
+                  leading: Icon(Icons.upload, color: Colors.white),
+                  title: Text(
+                    'Upload Existing Paper',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UploadOptionsScreen(),
+                      ),
+                    );
+                  },
+                ),
+                Divider(color: Colors.white.withOpacity(0.2), height: 1),
+                ListTile(
+                  leading: Icon(Icons.file_copy, color: Colors.white),
+                  title: Text(
+                    'Browse Templates',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TemplateGalleryScreen(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
       },
     );
   }
@@ -370,46 +415,46 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: const Text(
-        'Create New Paper',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-       iconTheme: IconThemeData(color: Colors.white),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Create New Paper',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
         ),
-      ),
-      actions: [
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
+        actions: [
           IconButton(
-            icon: const Icon(Icons.save,color: Colors.white),
+            icon: const Icon(Icons.save, color: Colors.white),
             onPressed: _savePaper,
             tooltip: 'Save Paper',
           ),
@@ -439,12 +484,10 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _paperType,
-                items: ['MCQ', 'Essay', 'Mixed'].map((type) {
-                  return DropdownMenuItem(
-                    value: type,
-                    child: Text(type),
-                  );
-                }).toList(),
+                items:
+                    ['MCQ', 'Essay', 'Mixed'].map((type) {
+                      return DropdownMenuItem(value: type, child: Text(type));
+                    }).toList(),
                 onChanged: (value) {
                   setState(() => _paperType = value!);
                 },
@@ -456,12 +499,15 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _subject,
-                items: ['Mathematics', 'DBMS', 'C#', 'SDTP', 'English'].map((subject) {
-                  return DropdownMenuItem(
-                    value: subject,
-                    child: Text(subject),
-                  );
-                }).toList(),
+                items:
+                    ['Mathematics', 'DBMS', 'C#', 'SDTP', 'English'].map((
+                      subject,
+                    ) {
+                      return DropdownMenuItem(
+                        value: subject,
+                        child: Text(subject),
+                      );
+                    }).toList(),
                 onChanged: (value) {
                   setState(() => _subject = value!);
                 },
@@ -473,12 +519,10 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
               const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _difficulty,
-                items: ['Easy', 'Medium', 'Hard'].map((level) {
-                  return DropdownMenuItem(
-                    value: level,
-                    child: Text(level),
-                  );
-                }).toList(),
+                items:
+                    ['Easy', 'Medium', 'Hard'].map((level) {
+                      return DropdownMenuItem(value: level, child: Text(level));
+                    }).toList(),
                 onChanged: (value) {
                   setState(() => _difficulty = value!);
                 },
@@ -507,10 +551,11 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Color.fromARGB(255, 107, 83, 2),
-                
                 ),
-                child: const Text('Generate Paper',
-                style: TextStyle(color: Colors.white , fontSize: 16),),
+                child: const Text(
+                  'Generate Paper',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ],
           ),
@@ -521,9 +566,9 @@ class _CreatePaperScreenState extends State<CreatePaperScreen> {
 
   void _savePaper() {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Generating your paper...')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Generating your paper...')));
       // TODO: Implement paper generation logic
       Navigator.pop(context);
     }
@@ -545,7 +590,7 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
       'subject': 'Mathematics',
       'questions': 20,
       'color': Color.fromARGB(255, 196, 132, 86),
-      'backgroundColor':Colors.white.withOpacity(0.2),
+      'backgroundColor': Colors.white.withOpacity(0.2),
     },
     {
       'title': 'DBMS Essay',
@@ -553,7 +598,7 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
       'subject': 'DBMS',
       'questions': 5,
       'color': Color.fromARGB(255, 196, 132, 86),
-      'backgroundColor':Colors.white.withOpacity(0.2),
+      'backgroundColor': Colors.white.withOpacity(0.2),
     },
     {
       'title': 'C# Test',
@@ -561,8 +606,7 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
       'subject': 'C#',
       'questions': 15,
       'color': Color.fromARGB(255, 196, 132, 86),
-      'backgroundColor':Colors.white.withOpacity(0.2),
-      
+      'backgroundColor': Colors.white.withOpacity(0.2),
     },
     {
       'title': 'English Grammar',
@@ -570,51 +614,51 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
       'subject': 'English',
       'questions': 25,
       'color': Color.fromARGB(255, 196, 132, 86),
-      'backgroundColor':Colors.white.withOpacity(0.2),
+      'backgroundColor': Colors.white.withOpacity(0.2),
     },
   ];
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: const Text(
-        'Paper Templates',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-       iconTheme: IconThemeData(color: Colors.white),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Paper Templates',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    body: GridView.builder(
+      body: GridView.builder(
         padding: const EdgeInsets.all(16),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -634,9 +678,7 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
   Widget _buildTemplateCard(Map<String, dynamic> template) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => _onTemplateSelected(template),
@@ -668,24 +710,18 @@ class _TemplateGalleryScreenState extends State<TemplateGalleryScreen> {
               const SizedBox(height: 8),
               Text(
                 template['subject'],
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(color: Colors.grey[600]),
               ),
               const SizedBox(height: 8),
               Text(
                 '${template['questions']} questions',
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+                style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 8),
               Chip(
                 label: Text(template['type']),
                 backgroundColor: template['color'].withOpacity(0.1),
-                labelStyle: TextStyle(
-                  color: template['color'],
-                ),
+                labelStyle: TextStyle(color: template['color']),
               ),
             ],
           ),
@@ -711,44 +747,44 @@ class TemplateDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: Text(
-        template['title'],
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: Text(
+          template['title'],
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+        ),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    body:  SingleChildScrollView(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -760,10 +796,7 @@ class TemplateDetailScreen extends StatelessWidget {
             const SizedBox(height: 30),
             const Text(
               'Description',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -785,81 +818,79 @@ class TemplateDetailScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Color.fromARGB(255, 107, 83, 2),
-                
                 ),
-                child: const Text('Use This Template',
-                style: TextStyle(color: Colors.white , fontSize: 16),),), 
+                child: const Text(
+                  'Use This Template',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
+            ),
           ],
         ),
-    ),
-  );
-  }
-}
-  Widget _buildDetailItem(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Text(
-            '$label: ',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 16),
-          ),
-        ],
       ),
     );
   }
+}
+
+Widget _buildDetailItem(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      children: [
+        Text(
+          '$label: ',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        Text(value, style: const TextStyle(fontSize: 16)),
+      ],
+    ),
+  );
+}
+
 class UploadOptionsScreen extends StatelessWidget {
   const UploadOptionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: const Text(
-        'Upload Paper',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-       iconTheme: IconThemeData(color: Colors.white),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Upload Paper',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-    body:  Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -906,10 +937,7 @@ class UploadOptionsScreen extends StatelessWidget {
               children: [
                 Icon(icon, size: 30),
                 const SizedBox(width: 20),
-                Text(
-                  label,
-                  style: const TextStyle(fontSize: 18),
-                ),
+                Text(label, style: const TextStyle(fontSize: 18)),
               ],
             ),
           ),
@@ -925,17 +953,18 @@ class UploadOptionsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => FilePreviewScreen(
-              filePath: pickedFile.path,
-              fileType: 'image',
-            ),
+            builder:
+                (context) => FilePreviewScreen(
+                  filePath: pickedFile.path,
+                  fileType: 'image',
+                ),
           ),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
   }
 
@@ -949,17 +978,18 @@ class UploadOptionsScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => FilePreviewScreen(
-              filePath: result.files.single.path!,
-              fileType: 'document',
-            ),
+            builder:
+                (context) => FilePreviewScreen(
+                  filePath: result.files.single.path!,
+                  fileType: 'document',
+                ),
           ),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
   }
 }
@@ -976,46 +1006,46 @@ class FilePreviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: const Text(
-        'Preview',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-      iconTheme: IconThemeData(color: Colors.white),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Scaffold(
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Preview',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
         ),
-      ),
-      actions: [
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
+        actions: [
           IconButton(
-            icon: const Icon(Icons.check,color: Colors.white,),
+            icon: const Icon(Icons.check, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -1028,19 +1058,20 @@ class FilePreviewScreen extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: fileType == 'image'
-            ? Image.file(File(filePath))
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.insert_drive_file, size: 80),
-                  const SizedBox(height: 20),
-                  Text(
-                    filePath.split('/').last,
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
+        child:
+            fileType == 'image'
+                ? Image.file(File(filePath))
+                : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.insert_drive_file, size: 80),
+                    const SizedBox(height: 20),
+                    Text(
+                      filePath.split('/').last,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
       ),
     );
   }
@@ -1068,7 +1099,7 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   Future<void> _processFile() async {
     // Simulate processing delay
     await Future.delayed(const Duration(seconds: 3));
-    
+
     setState(() {
       _isProcessing = false;
       _isSuccess = true; // Change to false to simulate failure
@@ -1078,112 +1109,126 @@ class _ProcessingScreenState extends State<ProcessingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    backgroundColor: Color.fromARGB(224, 238, 237, 236),
-    appBar: AppBar(
-      title: const Text(
-        'Processing',
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-          fontFamily: 'poppins',
-          letterSpacing: 1.2,
-        ),
-      ),
-       iconTheme: IconThemeData(color: Colors.white),
-      centerTitle: true,
-      elevation: 10,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 107, 83, 2),
-              Color.fromARGB(255, 53, 47, 1),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      backgroundColor: Color.fromARGB(224, 238, 237, 236),
+      appBar: AppBar(
+        title: const Text(
+          'Processing',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'poppins',
+            letterSpacing: 1.2,
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        elevation: 10,
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 107, 83, 2),
+                Color.fromARGB(255, 53, 47, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
       body: Center(
-        child: _isProcessing
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 20),
-                  Text('Analyzing your document...'),
-                ],
-              )
-            : _isSuccess
+        child:
+            _isProcessing
                 ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.check_circle, color: Colors.green, size: 80),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Analysis Complete',
-                        style: TextStyle(fontSize: 24),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20),
+                    Text('Analyzing your document...'),
+                  ],
+                )
+                : _isSuccess
+                ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 80,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Analysis Complete',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'File: ${widget.filePath.split('/').last}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(
+                          255,
+                          107,
+                          83,
+                          2,
+                        ), // Background color
+                        foregroundColor:
+                            Colors
+                                .white, // Text color (alternative to TextStyle)
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ), // Button padding
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        'File: ${widget.filePath.split('/').last}',
-                        style: const TextStyle(fontSize: 16),
+
+                      child: const Text(
+                        'View Results',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
-                      const SizedBox(height: 40,),
-                      ElevatedButton(
-                        
-                        onPressed: () {
-                          Navigator.popUntil(context, (route) => route.isFirst);
-                          
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 107, 83, 2), // Background color
-                         foregroundColor: Colors.white, // Text color (alternative to TextStyle)
-                         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12), // Button padding
-                          ),
-                        
-                        child: const Text('View Results',
-                        style: TextStyle(color: Colors.white , fontSize: 16), 
-                        ),
-                      ),
-                    ],
-                  )
+                    ),
+                  ],
+                )
                 : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error, color: Colors.red, size: 80),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Processing Failed',
-                        style: TextStyle(fontSize: 24),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text('Could not analyze the document'),
-                      const SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Try Again'),
-                      ),
-                    ],
-                  ),
-     
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, color: Colors.red, size: 80),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Processing Failed',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Could not analyze the document'),
+                    const SizedBox(height: 40),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Try Again'),
+                    ),
+                  ],
+                ),
       ),
     );
   }
 }
+
 class QuizResultsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> questions;
   final List<String> sourceFiles;
@@ -1197,9 +1242,7 @@ class QuizResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Generated Questions'),
-      ),
+      appBar: AppBar(title: Text('Generated Questions')),
       body: Column(
         children: [
           Expanded(
@@ -1207,10 +1250,7 @@ class QuizResultsScreen extends StatelessWidget {
               itemCount: questions.length,
               itemBuilder: (context, index) {
                 final question = questions[index];
-                return QuestionCard(
-                  question: question,
-                  index: index,
-                );
+                return QuestionCard(question: question, index: index);
               },
             ),
           ),
@@ -1232,11 +1272,8 @@ class QuestionCard extends StatelessWidget {
   final Map<String, dynamic> question;
   final int index;
 
-  const QuestionCard({
-    Key? key,
-    required this.question,
-    required this.index,
-  }) : super(key: key);
+  const QuestionCard({Key? key, required this.question, required this.index})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1253,27 +1290,34 @@ class QuestionCard extends StatelessWidget {
             ),
             if (question['type'] == 'MCQ') ...[
               SizedBox(height: 8),
-              ...List<Widget>.from(question['options'].map<Widget>((option) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 4),
-                  child: Text(
-                    '- $option',
-                    style: TextStyle(
-                      color: option == question['correct_answer'] 
-                          ? Colors.green 
-                          : Colors.black,
-                      fontWeight: option == question['correct_answer']
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+              ...List<Widget>.from(
+                question['options'].map<Widget>((option) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      '- $option',
+                      style: TextStyle(
+                        color:
+                            option == question['correct_answer']
+                                ? Colors.green
+                                : Colors.black,
+                        fontWeight:
+                            option == question['correct_answer']
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                      ),
                     ),
-                  ),
-                );
-              })),
+                  );
+                }),
+              ),
             ],
             SizedBox(height: 8),
             Text(
               'Correct Answer: ${question['correct_answer']}',
-              style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(height: 8),
             Text(
@@ -1297,4 +1341,3 @@ class QuestionCard extends StatelessWidget {
     );
   }
 }
-
