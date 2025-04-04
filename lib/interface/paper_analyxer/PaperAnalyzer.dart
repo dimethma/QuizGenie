@@ -267,9 +267,12 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        onPressed: () {
+    _showCreationOptions(context);
+  },
         backgroundColor: const Color(0xFFD28A56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        onPressed: () {},
+        
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
