@@ -24,19 +24,27 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     );
 
     if (result != null && result.files.single.path != null) {
+      if (!mounted) return;
+
       setState(() {
         selectedFile = File(result.files.single.path!);
       });
 
-      showDialog(
+      // Ensure dialog shows after the widget is still mounted
+      if (!mounted) return;
+
+      // Use 'await' to pause until user closes the dialog
+      await showDialog(
         context: context,
         builder:
-            (_) => AlertDialog(
+            (dialogContext) => AlertDialog(
               title: const Text("Success"),
               content: const Text("File loaded successfully."),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop(); // Dismiss dialog only
+                  },
                   child: const Text("OK"),
                 ),
               ],
@@ -54,7 +62,7 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     });
 
     final uri = Uri.parse(
-      'http://192.168.229.154:5000/analyze-topics',
+      'http://172.20.10.4:5000/analyze-topics',
     ); // Update IP for real device
 
     try {
