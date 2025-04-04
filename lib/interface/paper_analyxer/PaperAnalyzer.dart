@@ -54,7 +54,7 @@ class _TopicBreakdownAnalyzerState extends State<TopicBreakdownAnalyzer> {
     });
 
     final uri = Uri.parse(
-      'http://192.168.8.129:5000/analyze-topics',
+      'http://192.168.229.154:5000/analyze-topics',
     ); // Update IP for real device
 
     try {

@@ -5,14 +5,13 @@ from openai import OpenAI
 import json
 import traceback
 
-
+# ✅ Use your OpenAI API key here
 client = OpenAI(api_key='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')
 
 app = Flask(__name__)
+CORS(app)  # Allow Flutter frontend access
 
-CORS(app) 
-
-
+# ✅ Extract text from PDF
 def extract_text_from_pdf(pdf_file):
     reader = PdfReader(pdf_file)
     text = ""
@@ -22,7 +21,7 @@ def extract_text_from_pdf(pdf_file):
             text += page_text
     return text
 
-
+# ✅ Endpoint to handle file upload + OpenAI call
 @app.route('/generate-questions', methods=['POST'])
 def generate_questions():
     if 'files' not in request.files:
@@ -35,7 +34,7 @@ def generate_questions():
         all_text += extract_text_from_pdf(file)
 
     try:
-        
+        # Request to OpenAI
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -56,11 +55,11 @@ def generate_questions():
         print("🔍 GPT Response:")
         print(content)
 
-        
-        if content.startswith("json"):
-            content = content.strip("json").strip("").strip()
+        # ✅ Remove markdown wrapping
+        if content.startswith("```json"):
+            content = content.strip("```json").strip("```").strip()
 
-        
+        # ✅ Extract just the JSON part (start at first [ and end at last ])
         start = content.find('[')
         end = content.rfind(']')
         if start != -1 and end != -1:
@@ -69,14 +68,14 @@ def generate_questions():
         print("✅ Cleaned content:")
         print(content)
 
-        
+        # ✅ Attempt to parse the JSON safely
         try:
             questions = json.loads(content)
         except json.JSONDecodeError as e:
             print("❌ JSON parse error:", e)
             return jsonify({"error": "OpenAI returned invalid JSON", "details": str(e)}), 500
 
-        
+        # ✅ Return only the first 30 questions (safety)
         return jsonify({"questions": questions[:30]})
 
     except Exception as e:
@@ -124,11 +123,11 @@ def analyze_topics():
         print("✅ OpenAI response received")
         print("🧠 Raw response:\n", content)
 
-        
-        if content.startswith("json"):
-            content = content.strip("json").strip("").strip()
+        # ✅ Strip markdown formatting if present
+        if content.startswith("```json"):
+            content = content.strip("```json").strip("```").strip()
 
-       
+        # ✅ Extract JSON block
         start = content.find('[')
         end = content.rfind(']')
         if start != -1 and end != -1:
@@ -137,7 +136,7 @@ def analyze_topics():
         print("🧪 Extracted JSON block:")
         print(content)
 
-        
+        # ✅ Parse JSON content
         try:
             topics = json.loads(content)
         except json.JSONDecodeError as e:
@@ -155,6 +154,6 @@ def analyze_topics():
 
 
 
-
+# ✅ Run server
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
